@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" role="img" aria-label="Pathfinder">
+  <!-- SPDX-License-Identifier: BUSL-1.1 -->
+  <!-- Pathfinder mark: three QR finder patterns and four data cells in the product cyan on near-black. Pure geometry; the raster icon set in this directory is generated from the same shapes. -->
+  <rect width="48" height="48" rx="12" fill="#0a0a0a" />
+  <!-- QR finder patterns -->
+  <rect x="9" y="9" width="12" height="12" rx="3" stroke="#00c3f0" stroke-width="2.5" />
+  <rect x="13" y="13" width="4" height="4" rx="1" fill="#00c3f0" />
+  <rect x="27" y="9" width="12" height="12" rx="3" stroke="#00c3f0" stroke-width="2.5" />
+  <rect x="31" y="13" width="4" height="4" rx="1" fill="#00c3f0" />
+  <rect x="9" y="27" width="12" height="12" rx="3" stroke="#00c3f0" stroke-width="2.5" />
+  <rect x="13" y="31" width="4" height="4" rx="1" fill="#00c3f0" />
+  <!-- data cells -->
+  <rect x="27" y="27" width="4" height="4" rx="1" fill="#00c3f0" />
+  <rect x="35" y="27" width="4" height="4" rx="1" fill="#a0c8e6" />
+  <rect x="27" y="35" width="4" height="4" rx="1" fill="#a0c8e6" />
+  <rect x="35" y="35" width="4" height="4" rx="1" fill="#00c3f0" />
+</svg>

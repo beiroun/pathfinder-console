@@ -1,0 +1,75 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/**
+ * Account block in the dashboard header: name, login, role badge and a logout action.
+ */
+.user-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  padding: var(--sp-16);
+  background: var(--paper);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  min-width: 220px;
+}
+
+.user-card__name {
+  font-weight: var(--fw-semibold);
+  font-size: var(--text-body-lg);
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.user-card__login {
+  font-size: var(--text-caption);
+  color: var(--mid);
+  margin-top: 2px;
+}
+
+.user-card__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logout — subtle danger-tinted outline pill */
+.btn-logout {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+  padding: var(--sp-4) var(--sp-12);
+  border-radius: var(--r-pill);
+  font-weight: var(--fw-medium);
+  font-size: var(--text-caption);
+}
+
+.btn-logout:hover {
+  background: #fee2e2;
+  opacity: 1;
+}
+
+/* Role badge — soft capsule tag (brand for admin, side for viewer) */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--sp-8);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+}
+
+.role-badge--admin {
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand-soft-border);
+}
+
+.role-badge--viewer {
+  background: var(--brand-side-soft);
+  color: var(--brand-side-ink);
+  border: 1px solid var(--brand-side);
+}

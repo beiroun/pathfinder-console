@@ -1,0 +1,65 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/** Login screen — centered brand card on the canvas. */
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--canvas);
+  padding: var(--sp-16);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--sp-48) var(--sp-24);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  border: 1px solid var(--hairline);
+}
+
+.auth-logo {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--sp-24);
+}
+
+.auth-logo img {
+  width: 100%;
+  height: 100%;
+}
+
+.auth-title {
+  font-size: var(--text-heading-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.6px;
+  color: var(--ink);
+  margin-bottom: var(--sp-8);
+}
+
+.auth-subtitle {
+  font-size: var(--text-body);
+  color: var(--mid);
+  margin-bottom: var(--sp-24);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-20);
+  text-align: left;
+}
+
+.auth-button {
+  margin-top: var(--sp-8);
+  padding: var(--sp-12);
+  font-size: var(--text-body);
+  width: 100%;
+}

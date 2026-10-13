@@ -1,0 +1,31 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/**
+ * Font-size utilities — the single source of truth for text sizes.
+ * Use these classes (or the matching --fs-* tokens inline) instead of ad-hoc rem/px
+ * values so type stays on one hard ladder: 12 / 14 / 16 / 20 / 24 / 30.
+ */
+.text-xs {
+  font-size: var(--fs-xs);
+}
+.text-sm {
+  font-size: var(--fs-sm);
+}
+.text-md {
+  font-size: var(--fs-md);
+}
+.text-lg {
+  font-size: var(--fs-lg);
+}
+.text-xl {
+  font-size: var(--fs-xl);
+}
+.text-2xl {
+  font-size: var(--fs-2xl);
+}
+
+/* Muted meta text — placeholders, secondary labels, empty-state copy */
+.text-muted {
+  color: var(--mid);
+}

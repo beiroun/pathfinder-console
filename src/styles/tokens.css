@@ -1,0 +1,84 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/**
+ * Design tokens. An achromatic base (canvas, paper, ink, hairline) with one chromatic accent - the product cyan -
+ * and red kept strictly for danger / destructive actions.
+ */
+:root {
+  /* --- Brand --- */
+  --brand: #00c3f0; /* primary accent, actions, active state */
+  --brand-side: #a0c8e6; /* soft secondary tone */
+
+  /* Derived from --brand */
+  --brand-strong: #00a6cc; /* hover / pressed for filled brand */
+  --brand-ink: #045e75; /* readable brand text on light surfaces */
+  --brand-soft: #e2f8fe; /* light brand fill (banners, selected, success) */
+  --brand-soft-border: #a9e7f7;
+  --brand-ring: 0 0 0 3px rgba(0, 195, 240, 0.3);
+
+  /* Derived from --brand-side */
+  --brand-side-soft: #ecf3fa; /* info surfaces */
+  --brand-side-ink: #1e4b66; /* text on side-soft */
+
+  /* --- Neutrals --- */
+  --canvas: #f5f5f5; /* page background */
+  --paper: #ffffff; /* card / primary surface */
+  --surface-alt: #fafafa; /* subtle surface, input variant */
+  --ink: #0a0a0a; /* primary text */
+  --ink-soft: #171717; /* secondary text */
+  --mid: #737373; /* muted text, placeholders */
+  --hairline: #e5e5e5; /* borders */
+
+  /* --- Danger (destructive) - the only warm hue --- */
+  --danger: #e7000b;
+  --danger-strong: #c20009;
+  --danger-soft: #fef2f2;
+  --danger-border: #fecaca;
+  --danger-ink: #991b1b;
+
+  /* --- Typography --- */
+  --font: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+
+  /* Unified font-size ladder - the ONLY sizes used app-wide (see typography.css) */
+  --fs-xs: 12px; /* .text-xs  - meta, pills, muted labels */
+  --fs-sm: 14px; /* .text-sm  - default body text */
+  --fs-md: 16px; /* .text-md  - emphasis, list titles, big buttons */
+  --fs-lg: 20px; /* .text-lg  - section headings (h3) */
+  --fs-xl: 24px; /* .text-xl  - card / banner headings (h2) */
+  --fs-2xl: 30px; /* .text-2xl - page title (h1) */
+
+  /* Semantic aliases onto the ladder */
+  --text-caption: var(--fs-xs);
+  --text-body: var(--fs-sm);
+  --text-body-lg: var(--fs-md);
+  --text-subheading: var(--fs-lg);
+  --text-heading-sm: var(--fs-xl);
+  --text-heading: var(--fs-2xl);
+  --text-display: var(--fs-2xl);
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+
+  /* --- Spacing (4px base) --- */
+  --sp-4: 4px;
+  --sp-8: 8px;
+  --sp-12: 12px;
+  --sp-16: 16px;
+  --sp-20: 20px;
+  --sp-24: 24px;
+  --sp-48: 48px;
+
+  /* --- Radius (18px interactive, 24px containers, 10px nested, 6px small) --- */
+  --r-card: 24px;
+  --r-pill: 18px;
+  --r-nested: 10px;
+  --r-sm: 6px;
+
+  /* --- Elevation --- */
+  --shadow-card: 0 0 0 1px rgba(23, 23, 23, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
+  --page-max-width: 1280px;
+}

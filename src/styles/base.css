@@ -1,0 +1,77 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/** Reset, page shell and the typographic scale (DESIGN.md). */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font);
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-size: var(--text-body);
+  line-height: 1.43;
+  -webkit-font-smoothing: antialiased;
+  /* Engage Inter's optical-size axis (opsz), loaded via the variable font */
+  font-optical-sizing: auto;
+}
+
+.container {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: var(--sp-24);
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-16);
+  margin-bottom: var(--sp-24);
+}
+
+/* Display / heading scale — tight tracking at large sizes */
+h1 {
+  font-size: var(--text-heading);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.75px;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+h2 {
+  font-size: var(--text-heading-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.6px;
+  line-height: 1.33;
+  color: var(--ink);
+}
+
+h3 {
+  font-size: var(--text-subheading);
+  font-weight: var(--fw-semibold);
+  line-height: 1.56;
+  color: var(--ink);
+}
+
+h4 {
+  font-size: var(--text-body-lg);
+  font-weight: var(--fw-semibold);
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.mt-2 {
+  margin-top: var(--sp-16);
+}
