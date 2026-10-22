@@ -4,18 +4,12 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-const sourceDir = (name: string) => fileURLToPath(new URL(`./src/${name}`, import.meta.url));
-
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    // The same aliases as tsconfig.json
+    // The same alias as tsconfig.json
     alias: {
-      '@components': sourceDir('components'),
-      '@pages': sourceDir('pages'),
-      '@routes': sourceDir('routes'),
-      '@hooks': sourceDir('hooks'),
-      '@ui': sourceDir('ui')
+      '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
   server: {

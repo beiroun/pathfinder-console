@@ -1,20 +1,32 @@
 /* SPDX-License-Identifier: BUSL-1.1 */
 /* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
-/* Page-local styles of Pathfinder QR; the skin, the shell and the motion live in src/theme */
 
-/* The rendered code keeps its own white quiet zone (part of the image); the frame around it follows the theme */
-.qr-preview {
-  min-height: 280px;
-  padding: 16px;
-  border: 1px solid var(--pf-hairline);
-  border-radius: var(--pf-r-lg);
-  background: var(--pf-surface-alt);
+/* Page-local styles of the QR screens; the skin and the shell live in src/theme */
+
+/* A line under a section title: what the section shows */
+.pf-section__note {
+  margin: 0 0 16px;
+  color: var(--pf-ash);
 }
 
-.qr-preview__image {
+/* The rendered code: square-cornered like every surface, on white in both schemes - a QR needs a light quiet zone
+   to scan, and the image brings its own */
+.pf-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pf-qr__button {
   display: block;
-  width: min(260px, 100%);
-  height: auto;
-  border-radius: var(--pf-r-md);
+  line-height: 0;
+  border: 1px solid var(--pf-hairline);
   cursor: copy;
+}
+
+.pf-qr__image {
+  display: block;
+  width: min(240px, 100%);
+  height: auto;
 }

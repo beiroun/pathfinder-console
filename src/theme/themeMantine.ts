@@ -11,99 +11,90 @@ import {
   DEFAULT_THEME,
   Input,
   InputWrapper,
-  type MantineColorsTuple,
-  type MantineTransition,
   Menu,
   Modal,
   NavLink,
   Paper,
-  Popover,
+  SegmentedControl,
   Table,
+  Title,
   Tooltip,
-  virtualColor
+  virtualColor,
+  type MantineColorsTuple
 } from '@mantine/core';
 
 /*
- * Mantine theme of the console. Every brand colour is a
- * virtualColor: one tuple for the light scheme (index 6 = the canonical value), another for the dark one, built
- * from named roles for the deep-blue canvas and checked for contrast. Mantine reads a tuple by
- * index and reads different indexes per scheme: light - 6 text/outline/fill, 1-2 "light" backgrounds, 9 "light"
- * text; dark - 0 "light" text, 1 outline, 4 text and anchors, 5 fill, 6 its hover, 8 error/success, and the "light"
- * background is index 9 darkened by half.
+ * Every colour of the console is a virtualColor: one tuple for the light scheme, another for the dark one.
+ * Mantine reads a tuple by index and reads different indexes per scheme (default-css-variables-resolver): in the
+ * light scheme index 6 is text, outline and fill, 1 and 2 the "light" backgrounds, 9 the "light" text; in the dark
+ * scheme index 0 is the "light" text, 1 the outline, 4 text and anchors, 5 the fill, 6 its hover, 8 the semantic
+ * error/success value and the "light" background is index 9 darkened by half. One tuple cannot serve both canvases:
+ * the brand navy is the dark canvas itself, and the old near-black "light" washes vanished on it. The light tuples
+ * are the landing's palette; the dark tuples are assembled from named roles for the navy canvas (#212842).
  */
 
-/** Blue of the logo, the primary colour: buttons, active controls, focus; index 7 is the blue as text (4.9:1). */
+/** Slate navy of the 84softworks band on the white canvas; index 6 is the brand value #212842. */
 const brandLight: MantineColorsTuple = [
-  '#F1F6F9',
-  '#DEECF2',
-  '#BFDDE9',
-  '#91C8DF',
-  '#63B7D9',
-  '#37A9D7',
-  '#2692BE',
-  '#1C799F',
-  '#176180',
-  '#114A61'
+  '#eef0f6',
+  '#dbdfeb',
+  '#b9c0d6',
+  '#949fc0',
+  '#6a79a3',
+  '#3f4d7c',
+  '#212842',
+  '#1a2036',
+  '#14182a',
+  '#0e111e'
 ];
 
-/** Sky blue of the logo: the sign, highlights, the selected row (index 1), chart series. Never text, never a button. */
-const skyLight: MantineColorsTuple = [
-  '#F0F8FA',
-  '#DBF0F5',
-  '#B7E4F0',
-  '#88D8EE',
-  '#60D1F0',
-  '#36CCF6',
-  '#12C3F4',
-  '#05A6D2',
-  '#0485A9',
-  '#036580'
-];
-
-/** Terracotta, the brand's accent: counters, attention, the active navigation item (index 7 as text). */
+/** Warm orange accent on the white canvas; index 6 is the brand value #dd5410. */
 const accentLight: MantineColorsTuple = [
-  '#F9F3F0',
-  '#F3E4DD',
-  '#ECCABB',
-  '#E9B29A',
-  '#E89A79',
-  '#EB895F',
-  '#E66C37',
-  '#D44F15',
-  '#AB4011',
-  '#81300D'
-];
-
-/** Neutrals tuned so Mantine's slots land on the palette: 4 (default border) = hairline, 6 (dimmed) = dark grey. */
-const grayLight: MantineColorsTuple = [
-  '#F7F7F8',
-  '#F1F2F3',
-  '#EBECEE',
-  '#E9EAEC',
-  '#E6E7E9',
-  '#A6A7AA',
-  '#58595B',
-  '#4A4B4D',
-  '#3A3B3D',
-  '#262728'
+  '#fff1ea',
+  '#ffdcc9',
+  '#ffb892',
+  '#ff955c',
+  '#f87a36',
+  '#ea6420',
+  '#dd5410',
+  '#c2410c',
+  '#a1360b',
+  '#7f2b09'
 ];
 
 /**
- * Dark neutrals: the body (index 7) is the deep tone of the brand blue; surfaces, hover and borders are lighter
- * steps of the same hue. Mantine reads: 0 text, 1 secondary, 2 dimmed, 3 placeholder, 4 border, 5 hover, 6 surface,
- * 7 body, 8 sunken, 9 deep.
+ * Light-scheme neutrals, tuned so Mantine's semantic slots land on the landing's palette: index 4 (default
+ * border) is the hairline #e5e7eb, index 5 (placeholder) the ash #a3a3a3, index 6 (dimmed) stays readable.
+ */
+const grayLight: MantineColorsTuple = [
+  '#f9fafb',
+  '#f3f4f6',
+  '#eef0f3',
+  '#e9ebef',
+  '#e5e7eb',
+  '#a3a3a3',
+  '#767676',
+  '#525252',
+  '#404040',
+  '#262626'
+];
+
+/**
+ * Dark scheme built on the landing's hero band: the body (index 7) is the Slate navy #212842 itself; surfaces,
+ * hover and borders are lighter steps of the same hue (HSL 227°). Mantine reads it by index: 0 text, 1 secondary
+ * labels, 2 dimmed, 3 placeholder, 4 border, 5 hover, 6 surface, 7 body, 8 sunken track. Border and placeholder are
+ * lifted above what the hue steps alone would give - on navy a divider at 1.5:1 disappears, 1.7:1 reads.
  */
 const dark: MantineColorsTuple = [
-  '#EFF3F5',
-  '#CDDDE4',
-  '#95B6C6',
-  '#689CB6',
-  '#2A586F',
-  '#1D4458',
-  '#153849',
-  '#0E2A38',
-  '#0B222D',
-  '#091B24'
+  '#f2f3f7',
+  '#d2d6e4',
+  '#a3aac2',
+  '#8690ad',
+  '#404b78',
+  '#303a5f',
+  '#293251',
+  '#212842',
+  '#1a1f33',
+  '#151929'
 ];
 
 /** The slots Mantine reads from a colour tuple in the dark scheme, named. */
@@ -116,15 +107,15 @@ interface DarkSchemeColorRoles {
   text: string;
   /** Background of the "filled" variant (buttons). */
   filled: string;
-  /** Hover of "filled" - on a dark canvas a hover lightens; also the text of a coloured Menu.Item. */
+  /** Hover of "filled" - on a dark canvas a hover lightens. Also the text of a coloured Menu.Item (index 6). */
   filledHover: string;
   /** What Mantine reads as the error (red) or success (teal) colour. */
   semantic: string;
-  /** Background of the "light" variant: the hue mixed into the canvas, so a pill sits on it, not under it. */
+  /** Background of the "light" variant: the hue mixed into the navy canvas, so the pill sits on it, not under it. */
   wash: string;
 }
 
-/** Mantine derives the "light" background as index 9 darkened by half, so index 9 carries the wash doubled. */
+/** Mantine derives the "light" background as index 9 darkened by half, so index 9 carries the wash with doubled channels. */
 function washSource(wash: string): string {
   const channels = [1, 3, 5].map(offset =>
     Math.min(255, parseInt(wash.slice(offset, offset + 2), 16) * 2)
@@ -132,6 +123,11 @@ function washSource(wash: string): string {
   return `#${channels.map(channel => channel.toString(16).padStart(2, '0')).join('')}`;
 }
 
+/**
+ * Tuple for the dark scheme from its roles. Indexes 2, 3 and 7 are not read by any variant in the dark scheme and
+ * repeat their neighbours; index 2 of "gray" is the one exception - Mantine paints the dark-scheme Tooltip with it,
+ * and the light onWash tint gives the inverted tooltip the landing's active-pill look.
+ */
 function darkSchemeTuple(roles: DarkSchemeColorRoles): MantineColorsTuple {
   return [
     roles.onWash,
@@ -147,275 +143,163 @@ function darkSchemeTuple(roles: DarkSchemeColorRoles): MantineColorsTuple {
   ];
 }
 
-const brandDark = darkSchemeTuple({
-  onWash: '#74B9D5',
-  outline: '#4DA6CA',
-  text: '#4DA6CA',
-  filled: '#2692BE',
-  filledHover: '#3C9DC4',
-  semantic: '#3399C2',
-  wash: '#15475E'
-});
-
-const skyDark = darkSchemeTuple({
-  onWash: '#4BD1F7',
-  outline: '#12C3F4',
-  text: '#12C3F4',
-  filled: '#12C3F4',
-  filledHover: '#2AC9F5',
-  semantic: '#12C3F4',
-  wash: '#0F556D'
-});
-
-const accentDark = darkSchemeTuple({
-  onWash: '#EE9873',
-  outline: '#EA8153',
-  text: '#EA8153',
-  filled: '#E66C37',
-  filledHover: '#E87B4B',
-  semantic: '#E66C37',
-  wash: '#4A3C38'
-});
-
-const grayDark = darkSchemeTuple({
-  onWash: '#BBBCBE',
-  outline: '#A6A7AA',
-  text: '#A6A7AA',
-  filled: '#A6A7AA',
-  filledHover: '#AFB0B2',
-  semantic: '#A6A7AA',
-  wash: '#394D58'
-});
-
-const redDark = darkSchemeTuple({
-  onWash: '#EC7F7F',
-  outline: '#EB7B7B',
-  text: '#E86767',
-  filled: '#E03131',
-  filledHover: '#E34646',
-  semantic: '#E86767',
-  wash: '#492C36'
-});
-
-const tealDark = darkSchemeTuple({
-  onWash: '#5ECFAD',
-  outline: '#12B886',
-  text: '#12B886',
-  filled: '#12B886',
-  filledHover: '#2ABF92',
-  semantic: '#12B886',
-  wash: '#0F524E'
-});
-
-const yellowDark = darkSchemeTuple({
-  onWash: '#F3A538',
-  outline: '#F08C00',
-  text: '#F08C00',
-  filled: '#F08C00',
-  filledHover: '#F2981A',
-  semantic: '#F08C00',
-  wash: '#4D4528'
-});
-
-const fontFamily = "'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
-
 /*
- * Motion of the floating layers: menus, dropdowns and popovers drop 4px
- * into place as they fade in, a modal rises 6px; leaving is quicker than coming. Mantine opens dropdowns of selects
- * instantly by default (duration 0) – here they move like every other layer.
+ * Dark roles: tints of the hue as it sits on white (onWash, outline, text, semantic) and the hue mixed into the
+ * canvas (wash). Contrast on #212842: outline and text 5.4:1 and up, onWash on its wash 4.9:1 and up; the figures
+ * come from the derivation in the console-brand-skin changelog, not from the eye.
  */
-const EASE_OUT = 'cubic-bezier(0.2, 0.7, 0.2, 1)';
 
-const DROP_IN: MantineTransition = {
-  in: { opacity: 1, transform: 'translateY(0)' },
-  out: { opacity: 0, transform: 'translateY(-4px)' },
-  transitionProperty: 'opacity, transform'
-};
+/** Orange of the accent on navy: text a step brighter than #dd5410 (3.7:1 on navy), fills unchanged. */
+const accentDark = darkSchemeTuple({
+  onWash: '#f1bb9f',
+  outline: '#eb9c74',
+  text: '#e78453',
+  filled: '#ea6420',
+  filledHover: '#f27a3c',
+  semantic: '#e99064',
+  wash: '#5d3632'
+});
 
-const RISE_IN: MantineTransition = {
-  in: { opacity: 1, transform: 'translateY(0)' },
-  out: { opacity: 0, transform: 'translateY(6px)' },
-  transitionProperty: 'opacity, transform'
-};
+/** The brand on its own navy: a periwinkle, the navy lifted towards white, so a brand badge is not the canvas. */
+const brandDark = darkSchemeTuple({
+  onWash: '#ced6ff',
+  outline: '#a5b3ff',
+  text: '#96a6ff',
+  filled: '#5a6ccf',
+  filledHover: '#6b7cd9',
+  semantic: '#a5b3ff',
+  wash: '#485591'
+});
 
-const FLOATING_TRANSITION = {
-  transition: DROP_IN,
-  duration: 160,
-  exitDuration: 100,
-  timingFunction: EASE_OUT
-};
+/** Neutral on navy: the ash tinted with the canvas hue, never a grey that reads as dirt on blue. */
+const grayDark = darkSchemeTuple({
+  onWash: '#d9dbe5',
+  outline: '#b0b6ca',
+  text: '#b8bdcf',
+  filled: '#5c6687',
+  filledHover: '#6a7596',
+  semantic: '#a4aac2',
+  wash: '#454c66'
+});
 
-export const appTheme = createTheme({
-  // An operator who asked the system for less motion gets none from Mantine either (motion.css stops the rest)
-  respectReducedMotion: true,
+/** Danger on navy: a red a touch calmer than Mantine's, so it sits next to the orange accent without competing. */
+const redDark = darkSchemeTuple({
+  onWash: '#f4b2b4',
+  outline: '#f09598',
+  text: '#ee868a',
+  filled: '#e04a50',
+  filledHover: '#f07b80',
+  semantic: '#ef9194',
+  wash: '#643346'
+});
+
+/** Online / success on navy. */
+const tealDark = darkSchemeTuple({
+  onWash: '#a5e4d1',
+  outline: '#71d4b6',
+  text: '#59cdaa',
+  filled: '#20b486',
+  filledHover: '#2cc394',
+  semantic: '#4dcaa4',
+  wash: '#1c5658'
+});
+
+const fontFamily = "'Onest', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
+
+/**
+ * Console theme in the 84softworks skin: Onest at weight 400 everywhere, orange as the single accent, navy as a
+ * second palette for badges, radius pill or none, no shadows, hairline borders. Page-level blocks (band, kicker,
+ * metrics) are plain CSS in console.css; this file shapes Mantine's own components to the same rules.
+ */
+export const themeMantine = createTheme({
   fontFamily,
   fontFamilyMonospace: "ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace",
-  headings: { fontFamily, fontWeight: '700' },
+  headings: { fontFamily, fontWeight: '400' },
   fontSmoothing: true,
-  white: '#FFFFFF',
-  black: '#0A0A0A',
+  white: '#ffffff',
+  black: '#0a0a0a',
   colors: {
     brandLight,
     brandDark,
-    brand: virtualColor({
-      name: 'brand',
-      light: 'brandLight',
-      dark: 'brandDark'
-    }),
-    skyLight,
-    skyDark,
-    sky: virtualColor({ name: 'sky', light: 'skyLight', dark: 'skyDark' }),
+    brand: virtualColor({ name: 'brand', light: 'brandLight', dark: 'brandDark' }),
     accentLight,
     accentDark,
-    accent: virtualColor({
-      name: 'accent',
-      light: 'accentLight',
-      dark: 'accentDark'
-    }),
+    accent: virtualColor({ name: 'accent', light: 'accentLight', dark: 'accentDark' }),
     grayLight,
     grayDark,
     gray: virtualColor({ name: 'gray', light: 'grayLight', dark: 'grayDark' }),
-    // Mantine's own red, teal and yellow stay on the light canvas; only their dark halves are ours
+    // Mantine's own red and teal stay on the light canvas; only their dark halves are ours
     redLight: DEFAULT_THEME.colors.red,
     redDark,
     red: virtualColor({ name: 'red', light: 'redLight', dark: 'redDark' }),
     tealLight: DEFAULT_THEME.colors.teal,
     tealDark,
     teal: virtualColor({ name: 'teal', light: 'tealLight', dark: 'tealDark' }),
-    yellowLight: DEFAULT_THEME.colors.yellow,
-    yellowDark,
-    yellow: virtualColor({
-      name: 'yellow',
-      light: 'yellowLight',
-      dark: 'yellowDark'
-    }),
     dark
   },
-  primaryColor: 'brand',
+  primaryColor: 'accent',
   primaryShade: { light: 6, dark: 5 },
-  defaultRadius: 'md',
-  radius: { xs: '4px', sm: '6px', md: '8px', lg: '12px', xl: '9999px' },
-  // Every step grows with the screen (--pf-fluid in tokens.css): the tighter values on a small laptop (1280×720),
-  // Mantine's own on full HD, so the gaps and paddings of a page give a low screen to its content
-  spacing: {
-    xs: 'calc(0.5rem + var(--pf-fluid) / 8)',
-    sm: 'calc(0.625rem + var(--pf-fluid) / 8)',
-    md: 'calc(0.75rem + var(--pf-fluid) / 4)',
-    lg: 'calc(1rem + var(--pf-fluid) / 4)',
-    xl: 'calc(1.5rem + var(--pf-fluid) / 2)'
-  },
-  // Depth is the hairline and the paper, never a shadow
+  defaultRadius: 0,
+  // Two radii exist in the brand: pill (xl) and none - every other size collapses to none
+  radius: { xs: '0', sm: '0', md: '0', lg: '0', xl: '9999px' },
   shadows: { xs: 'none', sm: 'none', md: 'none', lg: 'none', xl: 'none' },
-  breakpoints: {
-    xs: '480px',
-    sm: '768px',
-    md: '992px',
-    lg: '1200px',
-    xl: '1400px'
-  },
   components: {
     Button: Button.extend({
-      defaultProps: { radius: 'md' },
-      styles: { root: { fontWeight: 500, letterSpacing: 0 } }
+      defaultProps: { radius: 'xl' },
+      styles: { root: { fontWeight: 400, letterSpacing: 0 } }
     }),
     Badge: Badge.extend({
-      defaultProps: { radius: 'xl', variant: 'light' },
-      // overflow visible on the root and the label: Mantine clips both with an ellipsis, which lets an auto-layout
-      // table shrink a badge column below its text; status labels are short and must never be cut
-      styles: {
-        root: {
-          fontWeight: 500,
-          letterSpacing: '0.02em',
-          textTransform: 'none',
-          overflow: 'visible'
-        },
-        label: { overflow: 'visible' }
-      }
+      // Mantine's own clipping stays: every table is fixed-layout and sized so its badges fit, and a column squeezed
+      // below its badge (a phone, an operator's drag) ends the label with an ellipsis instead of cutting it mid-letter
+      styles: { root: { fontWeight: 400, letterSpacing: '0.06em' } }
     }),
     Table: Table.extend({
       defaultProps: { verticalSpacing: 'sm', highlightOnHover: true },
       styles: {
         th: {
-          fontWeight: 500,
-          fontSize: '12px',
+          fontWeight: 400,
+          fontSize: 'var(--pf-text-caption)',
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
           color: 'var(--pf-ash)'
         }
       }
     }),
-    Card: Card.extend({
-      defaultProps: {
-        withBorder: true,
-        shadow: 'none',
-        radius: 'lg',
-        padding: 'lg'
-      }
-    }),
-    Paper: Paper.extend({ defaultProps: { shadow: 'none', radius: 'lg' } }),
+    Card: Card.extend({ defaultProps: { withBorder: true, shadow: 'none', padding: 'lg' } }),
+    Paper: Paper.extend({ defaultProps: { shadow: 'none' } }),
     Modal: Modal.extend({
-      defaultProps: {
-        centered: true,
-        radius: 'lg',
-        overlayProps: { backgroundOpacity: 0.45, blur: 2 },
-        transitionProps: {
-          transition: RISE_IN,
-          duration: 220,
-          exitDuration: 160,
-          timingFunction: EASE_OUT
-        }
-      },
+      defaultProps: { centered: true, overlayProps: { backgroundOpacity: 0.45, blur: 2 } },
       styles: {
         content: { border: '1px solid var(--mantine-color-default-border)' },
-        title: { fontSize: '18px', fontWeight: 700 }
-      }
-    }),
-    // Floating layers and fields on the dark canvas: a dropdown takes the paper, a field is sunken to the canvas
-    Menu: Menu.extend({
-      defaultProps: { transitionProps: FLOATING_TRANSITION },
-      styles: { dropdown: { backgroundColor: 'var(--pf-paper)' } }
-    }),
-    Combobox: Combobox.extend({
-      defaultProps: { transitionProps: FLOATING_TRANSITION },
-      styles: { dropdown: { backgroundColor: 'var(--pf-paper)' } }
-    }),
-    Popover: Popover.extend({
-      defaultProps: { transitionProps: FLOATING_TRANSITION }
-    }),
-    Input: Input.extend({
-      styles: { input: { backgroundColor: 'var(--pf-field)' } }
-    }),
-    InputWrapper: InputWrapper.extend({
-      styles: {
-        label: {
-          fontWeight: 500,
-          fontSize: '13px',
-          color: 'var(--pf-ink-soft)'
+        // An unknown audit code or a token name has no spaces: it wraps instead of pushing the close button off a
+        // phone, and two lines of a title do not touch
+        title: {
+          fontSize: 'var(--pf-text-subheading)',
+          letterSpacing: '-0.55px',
+          lineHeight: 1.25,
+          overflowWrap: 'anywhere',
+          minWidth: 0
         }
       }
     }),
-    Code: Code.extend({
-      styles: {
-        root: {
-          backgroundColor: 'var(--pf-surface-alt)',
-          border: '1px solid var(--pf-hairline)'
-        }
-      }
-    }),
-    Alert: Alert.extend({
-      defaultProps: { variant: 'light', radius: 'md' },
-      styles: { title: { fontWeight: 500 } }
-    }),
-    NavLink: NavLink.extend({ styles: { label: { fontSize: '14px' } } }),
-    // Mantine opens tooltips by the mouse only: on a phone the exact time, the full role name and the like were out
-    // of reach. A tap opens them, a tap elsewhere closes; the keyboard focus opens them too
+    // Floating layers and fields on the dark canvas: without shadows a dropdown is told apart from the page only by
+    // its surface, so it takes the paper; a field is sunken to the canvas, so it shows on paper (modals) as well
+    Menu: Menu.extend({ styles: { dropdown: { backgroundColor: 'var(--pf-paper)' } } }),
+    Combobox: Combobox.extend({ styles: { dropdown: { backgroundColor: 'var(--pf-paper)' } } }),
+    Input: Input.extend({ styles: { input: { backgroundColor: 'var(--pf-field)' } } }),
+    Code: Code.extend({ styles: { root: { backgroundColor: 'var(--pf-chip)' } } }),
+    InputWrapper: InputWrapper.extend({ styles: { label: { fontWeight: 400 } } }),
+    Title: Title.extend({ styles: { root: { letterSpacing: 'var(--pf-tracking)' } } }),
+    Alert: Alert.extend({ styles: { title: { fontWeight: 400 } } }),
+    // Mantine opens tooltips by the mouse only: on a phone the full role name and the like were out of reach.
+    // A tap opens them, a tap elsewhere closes; the keyboard focus opens them too
     Tooltip: Tooltip.extend({
-      defaultProps: {
-        withArrow: false,
-        events: { hover: true, focus: true, touch: true },
-        // A tooltip opens toward its target from any side: a plain fade, no travel
-        transitionProps: { transition: 'fade', duration: 120 }
-      }
-    })
+      defaultProps: { withArrow: false, events: { hover: true, focus: true, touch: true } }
+    }),
+    SegmentedControl: SegmentedControl.extend({
+      defaultProps: { radius: 'xl' },
+      styles: { label: { fontWeight: 400 } }
+    }),
+    NavLink: NavLink.extend({ styles: { label: { fontSize: 'var(--pf-text-nav)' } } })
   }
 });

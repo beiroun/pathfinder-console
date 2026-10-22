@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import type { User, Role, AuthResponse } from '../types';
 import { api } from '../api/api';
-import { AUTH_PATH } from '../routes/paths';
+import { routePaths } from '@/shared/navigation';
 
 interface JwtPayload {
   sub: string; // username
@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
       setUser(null);
-      window.location.href = AUTH_PATH;
+      window.location.href = routePaths.login;
     }
   };
 

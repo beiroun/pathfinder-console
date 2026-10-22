@@ -14,15 +14,10 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "types": ["vite/client"],
-    // Aliases of the console's frame; vite.config.ts resolves the same names
+    // One alias for the sources; vite.config.ts resolves the same name
     "paths": {
-      "@components/*": ["./src/components/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@routes/*": ["./src/routes/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@ui/*": ["./src/ui/*"]
-    },
-    "allowImportingTsExtensions": true
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"]
 }

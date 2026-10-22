@@ -1,0 +1,768 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/*
+ * Page blocks of the console in the 84softworks skin (84softworks-landing home.css is the reference): a navy
+ * header band with the wordmark and white navigation, an editorial body where the only separator is a hairline,
+ * an orange kicker above every title, metric numbers in the accent. Mantine components are themed in
+ * themeMantine.ts; everything here is layout that Mantine has no component for.
+ */
+
+body {
+  font-family: var(--pf-font);
+  letter-spacing: var(--pf-tracking);
+}
+
+/* Headings carry no margins of their own: Mantine resets nothing here, and the browser's default h1 margin
+   (0.67em = 27px at the title scale) used to stack on top of every intended gap. Spacing belongs to the blocks
+   below, one owner per distance. */
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+/* Page container: left-aligned in the working area (an admin reads from the left edge, next to the column),
+   capped for line length on very wide screens. */
+.pf-wrap {
+  width: 100%;
+  max-width: var(--pf-page-max-width);
+  margin: 0;
+  padding: 0 var(--pf-page-gutter);
+}
+
+/* The login page has no column: its container is centred like the landing's */
+.pf-wrap--centered {
+  margin: 0 auto;
+}
+
+/* --- Top bar: the landing's navy band in both schemes, full width above the side column, in the console's own
+   composition - the mark and the small wordmark at the left edge, the switches and the operator at the right.
+   In the dark scheme the canvas is that navy, so a hairline marks the bar's edge; on the white canvas the band
+   needs none. Every colour of the bar is a --pf-topbar-* token (tokens.css); the structure below knows no
+   scheme. --- */
+.pf-topbar {
+  background: var(--pf-topbar-bg);
+  border-bottom: 1px solid var(--pf-topbar-line);
+  color: var(--pf-topbar-fg);
+}
+
+/* Full width: the mark at the left edge above the column, the operator and the switches at the right edge.
+   24px matches the column's own padding, so the mark and the navigation icons share one left edge. */
+.pf-header {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-lg);
+  height: var(--pf-header-height);
+  padding: 0 24px;
+}
+
+.pf-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-md);
+  min-width: 0;
+}
+
+/* Mark + wordmark + byline: the product name in the display face, "by 84softworks" in the body face next to it.
+   On the band the mark's navy disc merges with it and the orange ring and bolt carry the sign - as the favicon
+   does on the landing's own band. */
+.pf-brandmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--pf-topbar-fg);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.pf-brandmark__icon {
+  display: block;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.pf-wordmark {
+  font-family: var(--pf-font-wordmark);
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  padding-top: 2px; /* optical centre of the display face next to the round mark */
+}
+
+.pf-byline {
+  font-size: var(--pf-text-caption);
+  letter-spacing: 0;
+  color: var(--pf-topbar-muted);
+  padding-top: 3px;
+}
+
+.pf-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* The operator after the switches, the log-out last at the edge; the login is cut with an ellipsis, never the badge */
+.pf-header__operator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.pf-header__operator-login {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Icon buttons in the top bar (theme, log-out): softened bar colour, full on hover over a faint fill */
+.pf-topbar-iconbtn {
+  color: var(--pf-topbar-fg-soft);
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.pf-topbar-iconbtn:hover {
+  color: var(--pf-topbar-fg);
+  background: var(--pf-topbar-hover);
+}
+
+/* --- Language toggle: the landing's pill - a white outline on the band, the active segment inverted to white --- */
+.pf-langtoggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--pf-topbar-control-border);
+  border-radius: var(--pf-r-pill);
+}
+
+.pf-langtoggle button {
+  border: 0;
+  border-radius: var(--pf-r-pill);
+  padding: 4px 11px;
+  background: transparent;
+  font-family: var(--pf-font);
+  font-size: var(--pf-text-caption);
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--pf-topbar-fg-soft);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pf-langtoggle button:hover {
+  color: var(--pf-topbar-fg);
+}
+
+.pf-langtoggle button.is-active {
+  background: var(--pf-toggle-active-bg);
+  color: var(--pf-toggle-active-fg);
+}
+
+/* --- Side column: the primary navigation, the versions and the maker at its foot; a drawer under the top bar
+   on a phone --- */
+.pf-sidenav {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 24px 16px;
+  background: var(--mantine-color-body);
+  border-right: 1px solid var(--pf-hairline);
+}
+
+.pf-sidenav__links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+/* An item is an icon and a label on one line; the icon stands at the column's left edge, under the mark in the bar */
+.pf-sidenav__links a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  color: var(--mantine-color-text);
+  text-decoration: none;
+  font-size: var(--pf-text-nav);
+  opacity: 0.8;
+  transition:
+    opacity 0.15s ease,
+    color 0.15s ease;
+}
+
+.pf-sidenav__links a:hover,
+.pf-sidenav__links a.is-active {
+  opacity: 1;
+}
+
+/* The icon carries the item's state: ash at rest, the text colour on hover, the accent with the label when
+   active. No dot and no fill - colour is the marker, as on the landing. */
+.pf-sidenav__icon {
+  flex-shrink: 0;
+  color: var(--pf-ash);
+  transition: color 0.15s ease;
+}
+
+.pf-sidenav__links a:hover .pf-sidenav__icon {
+  color: var(--mantine-color-text);
+}
+
+/* Active page: label and icon in the accent */
+.pf-sidenav__links a.is-active,
+.pf-sidenav__links a.is-active .pf-sidenav__icon {
+  color: var(--pf-accent-ink);
+}
+
+/* --- Page. Vertical rhythm, one owner per distance: the page head owns the 24px to the first block (the first
+   section after it adds no margin of its own, and a Stack starts after the head, never around it); a section owns
+   the 32px above its hairline and the 24px under it; a section title owns the 12px under itself. --- */
+.pf-page {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--pf-header-height));
+  /* dvh: on a phone vh counts the space under the browser's bars, and every page scrolled by that much */
+  min-height: calc(100dvh - var(--pf-header-height));
+}
+
+.pf-page__body {
+  flex: 1;
+  padding: 40px 0 64px;
+}
+
+.pf-page__head {
+  margin-bottom: 24px;
+}
+
+/* The page's actions sit on the title's own line, centred on it - no extra row between title and content */
+.pf-page__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-lg);
+  flex-wrap: wrap;
+}
+
+/* Orange label above a title - the landing's section kicker */
+.pf-kicker {
+  font-size: var(--pf-text-nav);
+  color: var(--pf-accent-ink);
+  margin-bottom: 8px;
+}
+
+.pf-title {
+  font-size: var(--pf-text-title);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: var(--pf-tracking);
+}
+
+.pf-lede {
+  font-size: var(--pf-text-subheading);
+  line-height: 1.33;
+  letter-spacing: -0.55px;
+  color: var(--pf-ash);
+  max-width: 720px;
+}
+
+/* A block under a hairline: the subheading in 22px, then whatever it holds */
+.pf-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--pf-hairline);
+}
+
+/* The page head already owns the distance to the first block */
+.pf-page__head + .pf-section {
+  margin-top: 0;
+}
+
+.pf-section__title {
+  font-size: var(--pf-text-subheading);
+  font-weight: 400;
+  line-height: 1.33;
+  letter-spacing: -0.55px;
+  margin-bottom: 12px;
+}
+
+.pf-body {
+  font-size: 18px;
+  line-height: 1.56;
+  letter-spacing: -0.45px;
+  max-width: 720px;
+}
+
+.pf-muted {
+  color: var(--pf-ash);
+}
+
+/* --- Metrics: the landing's metric rows, numbers in the accent --- */
+.pf-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  column-gap: var(--mantine-spacing-xl);
+}
+
+/* Five columns once they fit (content = viewport - 336): the dashboard's fleet row, then its activity row */
+@media (min-width: 1216px) {
+  .pf-metrics {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.pf-metric {
+  padding: 24px 0;
+  border-top: 1px solid var(--pf-hairline);
+}
+
+.pf-metric__num {
+  font-size: var(--pf-text-metric);
+  line-height: 1;
+  letter-spacing: var(--pf-tracking);
+  color: var(--pf-accent-ink);
+}
+
+.pf-metric__lbl {
+  margin-top: 8px;
+  font-size: var(--pf-text-nav);
+  color: var(--pf-ash);
+}
+
+/* --- Label / value rows (server facts, legal) --- */
+.pf-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--mantine-spacing-lg);
+  padding: 16px 0;
+  border-top: 1px solid var(--pf-hairline);
+  font-size: var(--pf-text-nav);
+}
+
+.pf-row__lbl {
+  color: var(--pf-ash);
+  flex-shrink: 0;
+}
+
+.pf-row__val {
+  min-width: 0;
+  text-align: right;
+  max-width: 720px;
+  overflow-wrap: anywhere; /* URLs, tokens and JSON of the audit card have no spaces to break at */
+}
+
+.pf-row__val a,
+.pf-body a,
+.pf-footer a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--pf-hairline);
+  padding-bottom: 2px;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.pf-row__val a:hover,
+.pf-body a:hover,
+.pf-footer a:hover {
+  color: var(--pf-accent-ink);
+  border-color: var(--pf-accent-ink);
+}
+
+/* --- Footer: the versions, the website, the copyright. One muted row under a hairline on the login page;
+   stacked at the foot of the side column, under the hairline that closes the navigation. --- */
+.pf-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px var(--mantine-spacing-lg);
+  padding: 24px 0 32px;
+  border-top: 1px solid var(--pf-hairline);
+  font-size: 14px;
+  color: var(--pf-ash);
+}
+
+.pf-footer a {
+  border-bottom-color: transparent;
+}
+
+/* In the row the two versions stay left, the copyright line goes right */
+.pf-footer__rights {
+  margin-left: auto;
+}
+
+.pf-footer--stacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 0 0;
+  font-size: var(--pf-text-caption);
+}
+
+.pf-footer--stacked .pf-footer__rights {
+  margin-left: 0;
+}
+
+/* --- Login: the band without navigation, the form as a flat card on the canvas --- */
+.pf-login {
+  width: 100%;
+  max-width: 420px;
+  margin: 64px auto 0;
+}
+
+.pf-login__card {
+  margin-top: 32px;
+  padding: 32px;
+  border: 1px solid var(--pf-hairline);
+  background: var(--pf-paper);
+}
+
+/* --- Role legend: abbreviation badge next to its full name --- */
+.pf-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px var(--mantine-spacing-lg);
+  font-size: 14px;
+  color: var(--pf-ash);
+}
+
+.pf-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Lists. A page that is one list fills the viewport: its table scrolls inside under a sticky header and the
+   pagination stays at the bottom, the page itself does not scroll. 104px = the body's padding (40 + 64); below
+   480px of height the page scrolls as a whole instead of squeezing the table to nothing. --- */
+.pf-listpage {
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--pf-header-height) - 104px);
+  min-height: 480px;
+}
+
+/* Search, filters and the list's own buttons: one wrapping row above the table, the buttons at its right end */
+.pf-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px var(--mantine-spacing-md);
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.pf-toolbar__end {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  margin-left: auto;
+}
+
+.pf-listtable {
+  position: relative;
+}
+
+.pf-listtable--fill {
+  flex: 1;
+  min-height: 0;
+}
+
+/* A scrollbar that comes and goes would change the width and hide and show columns in turn */
+.pf-listtable--fill .pf-listtable__scroll {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.pf-listtable__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 16px;
+  text-align: center;
+}
+
+.pf-pagination {
+  padding-top: var(--mantine-spacing-md);
+}
+
+/* --- Card of one record: the page head with the record's key as the title and its badges beside it, a muted
+   line under it; then sections of fields, a caption over every value. The same fields fill the card windows. --- */
+.pf-card__title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  min-width: 0;
+}
+
+.pf-card__title .pf-title {
+  overflow-wrap: anywhere;
+}
+
+.pf-card__subtitle {
+  margin-top: 8px;
+  font-size: var(--pf-text-nav);
+  color: var(--pf-ash);
+  overflow-wrap: anywhere;
+}
+
+/* A date or a time in a squeezed cell: the line breaks between them, never inside one */
+.pf-nowrap {
+  white-space: nowrap;
+}
+
+.pf-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px var(--mantine-spacing-xl);
+}
+
+.pf-field {
+  min-width: 0;
+}
+
+/* Long values (a URL, a link) take the whole row of the grid */
+.pf-field--wide {
+  grid-column: 1 / -1;
+}
+
+.pf-field__lbl {
+  margin-bottom: 4px;
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ash);
+}
+
+.pf-field__val {
+  font-size: var(--pf-text-nav);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.pf-field__note {
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ash);
+}
+
+/* Text from another system (a push response, an error): its own line breaks kept */
+.pf-field__text {
+  font-size: 14px;
+  white-space: pre-wrap;
+}
+
+.pf-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--pf-hairline);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.pf-link:hover {
+  color: var(--pf-accent-ink);
+  border-color: var(--pf-accent-ink);
+}
+
+/* The journal's icon before a line of the event log: ash like the navigation's resting icons, on the first line */
+.pf-event__icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--pf-ash);
+}
+
+/* The phone: Mantine's `sm`, the width the shell switches the column to a sheet at */
+@media (max-width: 47.99em) {
+  .pf-byline {
+    display: none;
+  }
+
+  .pf-header {
+    gap: 8px;
+    padding: 0 16px;
+  }
+
+  /* 390px holds the mark, the log-out and the two switches, not the operator's name and role as well */
+  .pf-header__operator {
+    display: none;
+  }
+
+  .pf-header__actions {
+    gap: 8px;
+  }
+
+  /* The column becomes a sheet under the top bar (see «Mobile navigation sheet» at the end) */
+  .pf-sidenav {
+    padding: 8px 16px 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--pf-hairline);
+  }
+
+  .pf-sidenav__links a {
+    padding: 14px 0;
+    font-size: 18px;
+  }
+
+  .pf-page__body {
+    padding: 24px 0 48px;
+  }
+
+  /* A short phone has no height to spare for a list's own scroll (an iPhone SE left three rows and a scroll inside a
+     scroll): the page scrolls, the headings stick under the top bar */
+  .pf-listpage {
+    height: auto;
+    min-height: 0;
+  }
+
+  .pf-listtable--fill {
+    flex: none;
+  }
+
+  .pf-listtable--fill .pf-listtable__scroll {
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .pf-listtable--fill table {
+    --table-sticky-header-offset: var(--pf-header-height);
+  }
+
+  .pf-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .pf-row__val {
+    text-align: left;
+  }
+
+  .pf-login {
+    margin-top: 32px;
+  }
+
+  .pf-login__card {
+    padding: 24px;
+  }
+}
+
+/* 360px: the mark alone carries the brand; with the wordmark the log-out ran over its last letters */
+@media (max-width: 380px) {
+  .pf-wordmark {
+    display: none;
+  }
+}
+
+/* --- Mobile navigation sheet (and the phone's finger-sized controls) ---
+   Mantine slides in a column of the whole screen's width and height; the menu is six items, so on a phone the
+   column is a sheet of its content's height (scrolling inside when taller than the screen) that drops from the bar
+   and dims the page below. A tap on the dimmed page, Escape or any navigation closes it (AppLayout). Closed, it is
+   hidden, not only moved away, so Tab does not walk through invisible links. The query is Mantine's `sm`, the
+   breakpoint the shell switches at. */
+.pf-sidenav-scrim {
+  display: none;
+}
+
+@media (max-width: 47.99em) {
+  .mantine-AppShell-navbar.pf-sidenav {
+    height: auto;
+    max-height: calc(100dvh - var(--app-shell-header-offset, 0rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 8px 16px 16px;
+    border-right: 0;
+    border-bottom: 1px solid var(--pf-hairline);
+    transform: translateY(-8px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform 0.15s ease,
+      opacity 0.15s ease,
+      visibility 0s linear 0.15s;
+  }
+
+  .mantine-AppShell-navbar.pf-sidenav[data-opened] {
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      transform 0.15s ease,
+      opacity 0.15s ease;
+  }
+
+  /* iOS Safari zooms the page into a field whose text is under 16px and keeps the zoom after the login, so on a
+     phone every field reads at 16px */
+  .mantine-Input-input {
+    font-size: 16px;
+  }
+
+  /* Finger-sized controls of the bar without widening it: the bar holds the mark and the wordmark down to 381px */
+  .mantine-ActionIcon-root.pf-topbar-iconbtn {
+    width: 32px;
+    min-width: 32px;
+    height: 36px;
+    min-height: 36px;
+  }
+
+  .pf-langtoggle button {
+    padding: 9px 11px;
+  }
+
+  /* The burger as large a target as the bar's buttons; the 8px taken from the gap after it keeps the bar's budget */
+  .mantine-Burger-root.pf-burger {
+    width: 36px;
+    height: 36px;
+    padding: 9px;
+  }
+
+  .pf-header__left {
+    gap: 8px;
+  }
+
+  /* Two numbers in a row instead of eight rows of one before the charts */
+  .pf-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--mantine-spacing-md);
+  }
+
+  .pf-sidenav-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--pf-scrim);
+    touch-action: none;
+    animation: pf-scrim-in 0.15s ease;
+  }
+}
+
+@keyframes pf-scrim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mantine-AppShell-navbar.pf-sidenav,
+  .mantine-AppShell-navbar.pf-sidenav[data-opened] {
+    transform: none;
+    transition: none;
+  }
+
+  .pf-sidenav-scrim {
+    animation: none;
+  }
+}

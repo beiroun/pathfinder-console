@@ -3,9 +3,10 @@
 Management console of [Pathfinder](https://github.com/beiroun/pathfinder) by
 [84softworks](https://84softworks.com): the QR codes, their four platform
 targets, the rendered image and the per-platform scan statistics. In the
-interface the product is called **Pathfinder QR**. A single-page application
-served by nginx, talking to
-[`pathfinder-server`](https://github.com/beiroun/pathfinder-server) over `/api`.
+interface the product is **Pathfinder QR**. A single-page application served by
+nginx, talking to [`pathfinder-server`](https://github.com/beiroun/pathfinder-server)
+over `/api`. The look is the 84softworks skin, the same as the ThunderVox
+console: a navy band, an orange accent, Onest and Clash Display, light and dark.
 
 ---
 
@@ -13,68 +14,68 @@ served by nginx, talking to
 
 | Screen | Address | What it does |
 |---|---|---|
-| Login | `/auth` | sign-in with a login from the server's environment (`PF_ADMIN_USERS` / `PF_VIEWER_USERS`) |
-| QR codes | `/qr` | every code at once: smart search by name, slug and any link (an exact slug first), sort by any column heading (descending → ascending → default), pages of 25 / 50 / 100 / 200; the search, the sort and the page live in the URL, so a link, F5 and Back keep the selection. A row opens the code's card; «Новый QR-код» for administrators |
-| Card | `/qr/<slug>` | the rendered QR (click copies the PNG), scans per platform with the share of all, the public link and the four targets. «Действия»: download PNG / SVG and copy the image for every role; edit and delete (with a confirmation) for administrators |
-| Form | `/create-qr`, `/qr/<slug>/edit` | name, slug (create only: `A–Z a–z 0–9 - _`, 3–64, generated when blank, immutable afterwards), the four targets in resolution order iOS → Huawei → Android → Desktop; only `http(s)` links; the desktop link is the fallback and is required. Saving opens the card |
-| Errors | any other address | 404 inside the shell; a viewer on a form page reads «Недостаточно прав» on the same address |
+| Login | `/login` | sign-in with a login from the server's environment (`PF_ADMIN_USERS` / `PF_VIEWER_USERS`) |
+| QR codes | `/qr-codes` | every code at once: smart search by name, slug and any link (an exact slug first), sort by any column heading (descending → ascending → default), pages of 25 / 50 / 100 / 200; the search, the sort and the page live in the address, so a link, F5 and Back keep the selection. A row opens the code's card; «New QR code» next to the title for administrators |
+| Card | `/qr-codes/<slug>` | scans per platform with the share of all, the rendered QR (click copies the PNG), the link in the code and the four targets, the slug and the dates. «Actions»: download PNG / SVG and copy the image for every role; edit and delete (with a confirmation) for administrators |
+| New / edit | a dialog | name, slug (create only: `A–Z a–z 0–9 - _`, 3–64, generated when blank, immutable afterwards), the four targets in resolution order iOS → Huawei → Android → Desktop; only `http(s)` links; the desktop link is the fallback and is required. A new code opens its card |
+| About | `/about` | versions of the console and the server, the product, the author and the license |
+| Not found | any other address | inside the shell, with the way back to the codes |
 
 Roles come from the token: `ADMIN` (badge ADM) edits, `VIEWER` (badge RD)
-reads; the elements of an action a role may not take are not rendered, and the
-server refuses it anyway. Timestamps are the server's wall time
-(`LocalDateTime` in its `PF_TZ`), shown as they are.
-
-The interface is Russian, light and dark (follows the system until the
-operator picks one in the top bar).
+reads; what a role may not do is not rendered, and the server refuses it anyway.
+Timestamps are the server's wall time (`LocalDateTime` in its `PF_TZ`), shown as
+they are. The interface speaks English and Russian (RU / EN in the top bar, the
+first visit follows the browser) and follows the system's light or dark theme
+until the operator picks one. Old addresses (`/auth`, `/dashboard`) redirect.
 
 ## Stack
 
 | | |
 |---|---|
 | Language | TypeScript 7, strict |
-| UI | React 19.3, Mantine 9.7 (theme in `src/theme`), Tabler icons, self-hosted Inter |
+| UI | React 19.3, Mantine 9.7 (theme in `src/theme`), Tabler icons, self-hosted Onest + Clash Display |
 | API | axios with a bearer interceptor: refresh-and-retry on 401 / 403, one queued refresh for parallel requests; a small `useApiQuery` hook keeps the old data on screen while a request reloads it |
 | Routing | React Router 8.4 (`createBrowserRouter`) |
 | Build | Vite 8.3, Node 24 LTS |
 | Image | multi-stage Node → nginx 1.30 on `127.0.0.1:8081`: static files plus `location /api` proxied to the server on `127.0.0.1:8080`; published as `ghcr.io/beiroun/pathfinder-console:<version>` on a tagged release |
 
 Conventions: functional components and hooks, the API in `api/`, pages under
-`pages/`, no secrets or tokens in logs, comments in English.
+`pages/`, every display string in `i18n/dict.ts`, no secrets or tokens in logs,
+comments in English.
 
 ## Structure (`src/`)
 
 ```
 api/          axiosInstance (bearer, refresh queue), api (every call of the server), useApiQuery, queries
 context/      AuthContext (session from the token cookies)
-theme/        themeMantine (palettes of both schemes, component defaults), tokens, fonts, shell, motion
-components/   Layout (top bar + side column), Header, NavigationMenu, ShellFooter (versions), AuthForm,
-              PathfinderMark, ThemeModeSwitcher, UserInfo, RouteGuards
-ui/           the frame: list/ (filters bar, smart search, pagination, list table), table/ (column widths and
-              hiding by priority), motion/, ErrorPage, EntityCardHeader, EntityActionsMenu, ConfirmActionModal,
-              PageSection, MetricTile, CopyableId, RoleBadge
-hooks/        useUrlFilters (state in the URL), useClientList (search / sort / pages in memory), useDocumentTitle, …
-pages/        Auth, QrCodesList, QrCodeCard, QrCodeForm, NotFound, Forbidden
-routes/       paths, createBrowserRouter (created once outside the React tree)
+i18n/         dict (English and Russian copy), LangContext (choice, <html lang>)
+theme/        tokens, fonts, console (shell, page, sections, fields, metrics), themeMantine (palettes of both schemes)
+components/   AppLayout (top bar + side column), ConsoleHeader, ConsoleFooter (versions), BrandMark, PageHeader,
+              AdaptiveTable (column widths, hiding by priority), ListTable, SearchInput, TablePagination,
+              EntityCard (card header, fields, «Actions»), ConfirmActionModal, RoleBadge, toggles, RequireSession
+shared/       navigation, brand, roles, smart search, URL state of a list, sorting, server time, QR platforms, errors
+pages/        Login, QrCodes (+ the create / edit dialog), QrCodeCard, About, NotFound
+routes/       createBrowserRouter (created once outside the React tree)
 types/        the API contract of the server
-utils/        smart search, time, role badges, notifications, blob download, API error text
 ```
 
 The server envelope `{data, message, error}` is unwrapped in `api.ts`; a
-failure's `error.localizedMessage` is what the operator sees («Не выполнено»
-notification, or the error over the list with «Повторить»).
+failure's `error.localizedMessage` is what the operator sees (in the dialog, or
+over the list with «Retry»).
 
 ## Public assets
 
-- **Icons** - one set for every device: BMP `favicon.ico` (16/32/48), PNG
-  16/32/96 (round: dark disc, cyan ring, the QR mark, transparent corners),
-  `apple-touch-icon.png` 180 and maskable 192/512 (opaque squares),
-  `site.webmanifest`, `og-image.png` 1200×630 for link previews. Generated from
-  the geometry of `public/logo.svg` by `make_icons.py` (kept outside this
-  repository); bump `?v=` in `index.html` when the art changes. The same mark
-  is drawn in the interface by `PathfinderMark` (alone in white on the top bar,
-  on its dark tile on the login card).
-- **Fonts** - Inter is self-hosted (`public/fonts`, Latin and Cyrillic subsets
-  of the variable font): no CDN request, no flash of a system font.
+- **Icons** - the 84softworks set: BMP `favicon.ico` (16/32/48), PNG 16/32/96
+  (round: navy disc in the orange ring with the QR pattern in orange,
+  transparent corners), `apple-touch-icon.png` 180 and maskable 192/512 (opaque
+  navy squares), `site.webmanifest`, `og-image.png` 1200×630 for link previews,
+  `logo.svg` (the vector master). Generated by `make_icons_pathfinder.py` in the
+  84softworks design library (kept outside this repository); bump `?v=` in
+  `index.html` when the art changes. The same mark is drawn in the top bar by
+  `BrandMark`.
+- **Fonts** - Onest (Latin, Latin Extended, Cyrillic) and Clash Display (the
+  wordmark only), self-hosted in `public/fonts` and preloaded: no CDN request,
+  no flash of a system font.
 - **Metadata** - `index.html` carries the description, canonical, Open Graph,
   Twitter card and JSON-LD (WebSite + Organization), and keeps
   `noindex, nofollow`: a management console is not a search result. The
@@ -115,13 +116,13 @@ name than its API is the exception: build the image with
 origin on the server (`PF_CORS_ORIGINS`). The value is compiled into the
 bundle, so it is a build argument, not a runtime variable.
 
-Image: `docker build -t pathfinder-console:dev .` — `node:24-trixie-slim`
+Image: `docker build -t pathfinder-console:dev .` – `node:24-trixie-slim`
 builds, `nginx:1.30-trixie` serves; the build arg `APP_VERSION` (the git tag in
 CI) is shown in the footer as the console version next to the server's.
 
 ## License
 
-**Business Source License 1.1** — see [`LICENSE`](LICENSE). Non-production use
+**Business Source License 1.1** – see [`LICENSE`](LICENSE). Non-production use
 is free; production use beyond the Additional Use Grant requires a commercial
 license from the Licensor. Third-party components keep their own licenses
-(`NOTICE` in the umbrella repository). Font: Inter (SIL Open Font License 1.1).
+(`NOTICE` in the umbrella repository). Fonts: Onest (SIL Open Font License 1.1), Clash Display (Fontshare ITF Free Font License).

@@ -19,7 +19,6 @@
   "dependencies": {
     "@mantine/core": "9.7.3",
     "@mantine/hooks": "9.7.3",
-    "@mantine/notifications": "9.7.3",
     "@tabler/icons-react": "3.49.0",
     "axios": "1.20.0",
     "js-cookie": "3.0.8",

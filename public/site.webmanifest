@@ -1,6 +1,6 @@
 {
   "name": "Pathfinder QR",
-  "short_name": "Pathfinder QR",
+  "short_name": "Pathfinder",
   "description": "Pathfinder QR by 84softworks – one QR code, the right store for every device",
   "start_url": "/",
   "icons": [
@@ -17,7 +17,7 @@
       "purpose": "any maskable"
     }
   ],
-  "theme_color": "#0E2A38",
-  "background_color": "#f5f5f5",
+  "theme_color": "#212842",
+  "background_color": "#212842",
   "display": "standalone"
 }
