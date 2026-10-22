@@ -9,6 +9,28 @@
   color: var(--pf-ash);
 }
 
+/* The code and its links share one row from lg under one hairline: the code's column is as narrow as the code allows
+   (min-content wraps the hint under the image instead of widening the column), the links take the rest */
+.pf-qr-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px var(--mantine-spacing-xl);
+}
+
+@media (min-width: 75em) {
+  .pf-qr-overview {
+    grid-template-columns: min-content minmax(0, 1fr);
+  }
+}
+
+/* Stacked on a narrow screen the links get back the hairline of a section of their own */
+@media (max-width: 74.99em) {
+  .pf-qr-overview > section + section {
+    padding-top: 24px;
+    border-top: 1px solid var(--pf-hairline);
+  }
+}
+
 /* The rendered code: square-cornered like every surface, on white in both schemes - a QR needs a light quiet zone
    to scan, and the image brings its own */
 .pf-qr {
@@ -18,14 +40,23 @@
   gap: 12px;
 }
 
-/* The frame carries the size and the image fills it: a % width on the image would resolve against the frame, whose
-   width depends on the image - the browser falls back to the PNG's natural 512 px and stretches the frame past the code */
+/* The frame carries the size in px and the image fills it: a % width on the image would resolve against the frame,
+   whose width depends on the image - the browser falls back to the PNG's natural 512 px and stretches the frame past
+   the code; a px width also gives the min-content column of the row its width */
 .pf-qr__button {
   display: block;
-  width: min(240px, 100%);
+  width: 320px;
+  max-width: 100%;
   line-height: 0;
   border: 1px solid var(--pf-hairline);
   cursor: copy;
+}
+
+/* Beside the links the downloads stay one row: the column then is as wide as the code or the row, whichever is wider */
+@media (min-width: 75em) {
+  .pf-qr .pf-qr__downloads {
+    flex-wrap: nowrap;
+  }
 }
 
 .pf-qr__image {

@@ -149,8 +149,6 @@ export interface Copy {
     linksSection: string;
     redirectUrl: string;
     blankLink: string;
-    codeSection: string;
-    created: string;
     updated: string;
     notFoundTitle: string;
     notFoundBody: string;
@@ -389,8 +387,6 @@ const en: Copy = {
     linksSection: 'Links',
     redirectUrl: 'Link in the QR code',
     blankLink: 'Not set – leads to the Desktop link',
-    codeSection: 'Code',
-    created: 'Created',
     updated: 'Changed',
     notFoundTitle: 'QR code not found',
     notFoundBody:
@@ -644,8 +640,6 @@ const ru: Copy = {
     linksSection: 'Ссылки',
     redirectUrl: 'Ссылка в QR-коде',
     blankLink: 'Не задана – ведёт на ссылку Desktop',
-    codeSection: 'Код',
-    created: 'Создан',
     updated: 'Изменён',
     notFoundTitle: 'QR-код не найден',
     notFoundBody:

@@ -9,7 +9,7 @@ import { api } from '@/api/api';
 import { useQrCodeQuery } from '@/api/queries';
 import { ConfirmActionModal } from '@/components/ConfirmActionModal/ConfirmActionModal';
 import { CopyableLink } from '@/components/CopyableLink/CopyableLink';
-import { CardField, CardFields, CopyableValue } from '@/components/EntityCard/CardFields';
+import { CardField, CardFields } from '@/components/EntityCard/CardFields';
 import { EntityActionsMenu } from '@/components/EntityCard/EntityActionsMenu';
 import { EntityCardHeader } from '@/components/EntityCard/EntityCardHeader';
 import { useAuth } from '@/context/AuthContext';
@@ -70,7 +70,7 @@ function useQrPreview(slug: string) {
 }
 
 /**
- * One QR code: the rendered image with its downloads under it, the scans by platform and the links. "Actions" copy
+ * One QR code: the scans by platform, then the rendered image with its downloads next to the links. "Actions" copy
  * the image for every role; administrators also edit and delete the code there.
  */
 export function QrCodeCard() {
@@ -257,84 +257,79 @@ function QrCodeCardContent({
         </Link>
       </section>
 
-      <section className="pf-section">
-        <h2 className="pf-section__title">{copy.imageSection}</h2>
-        <div className="pf-qr">
-          {preview.isLoading ? (
-            <Loader size="sm" />
-          ) : preview.url ? (
-            <UnstyledButton
-              className="pf-qr__button"
-              onClick={() => void copyImage()}
-              aria-label={copy.copyImage}
-              title={copy.imageHint}
-            >
-              <img src={preview.url} alt={`QR ${qr.slug}`} className="pf-qr__image" />
-            </UnstyledButton>
-          ) : (
+      {/* The code and where it leads side by side: the code takes its own width, the links the rest */}
+      <div className="pf-section pf-qr-overview">
+        <section>
+          <h2 className="pf-section__title">{copy.imageSection}</h2>
+          <div className="pf-qr">
+            {preview.isLoading ? (
+              <Loader size="sm" />
+            ) : preview.url ? (
+              <UnstyledButton
+                className="pf-qr__button"
+                onClick={() => void copyImage()}
+                aria-label={copy.copyImage}
+                title={copy.imageHint}
+              >
+                <img src={preview.url} alt={`QR ${qr.slug}`} className="pf-qr__image" />
+              </UnstyledButton>
+            ) : (
+              <Text size="sm" c="dimmed">
+                {copy.imageFailed}
+              </Text>
+            )}
+            <Group gap="sm" className="pf-qr__downloads">
+              <Button
+                variant="default"
+                leftSection={<IconDownload size={16} />}
+                onClick={() => void download('png')}
+              >
+                {copy.downloadPng}
+              </Button>
+              <Button
+                variant="default"
+                leftSection={<IconDownload size={16} />}
+                onClick={() => void download('svg')}
+              >
+                {copy.downloadSvg}
+              </Button>
+            </Group>
             <Text size="sm" c="dimmed">
-              {copy.imageFailed}
+              {copy.imageHint}
             </Text>
-          )}
-          <Group gap="sm">
-            <Button
-              variant="default"
-              leftSection={<IconDownload size={16} />}
-              onClick={() => void download('png')}
-            >
-              {copy.downloadPng}
-            </Button>
-            <Button
-              variant="default"
-              leftSection={<IconDownload size={16} />}
-              onClick={() => void download('svg')}
-            >
-              {copy.downloadSvg}
-            </Button>
-          </Group>
-          <Text size="sm" c="dimmed">
-            {copy.imageHint}
-          </Text>
-        </div>
-      </section>
-
-      <section className="pf-section">
-        <h2 className="pf-section__title">{copy.linksSection}</h2>
-        <p className="pf-section__note">{t.qrCodes.resolveOrder}</p>
-        <CardFields>
-          <CardField label={copy.redirectUrl} wide>
-            <CopyableLink url={qr.redirect_url} multiline />
-          </CardField>
-          {qrTargets.map(target => {
-            const url = targetUrlOf(qr, target);
-            const platform = t.qrCodes.platforms[target.platform];
-            return (
-              <CardField key={target.field} label={`${platform.label} – ${platform.devices}`} wide>
-                {!url ? (
-                  <span className="pf-muted">{copy.blankLink}</span>
-                ) : isHttpLink(url) ? (
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="pf-link">
-                    {url}
-                  </a>
-                ) : (
-                  url
-                )}
-              </CardField>
-            );
-          })}
-        </CardFields>
-      </section>
-
-      <section className="pf-section">
-        <h2 className="pf-section__title">{copy.codeSection}</h2>
-        <CardFields>
-          <CardField label={t.qrCodes.columns.slug}>
-            <CopyableValue value={qr.slug} label={t.qrCodes.columns.slug} />
-          </CardField>
-          <CardField label={copy.created}>{formatServerTime(qr.created_at)}</CardField>
-          <CardField label={copy.updated}>{formatServerTime(qr.updated_at)}</CardField>
-        </CardFields>
-      </section>
+          </div>
+        </section>
+        <section>
+          <h2 className="pf-section__title">{copy.linksSection}</h2>
+          <p className="pf-section__note">{t.qrCodes.resolveOrder}</p>
+          <CardFields>
+            <CardField label={copy.redirectUrl} wide>
+              <CopyableLink url={qr.redirect_url} multiline />
+            </CardField>
+            {qrTargets.map(target => {
+              const url = targetUrlOf(qr, target);
+              const platform = t.qrCodes.platforms[target.platform];
+              return (
+                <CardField
+                  key={target.field}
+                  label={`${platform.label} – ${platform.devices}`}
+                  wide
+                >
+                  {!url ? (
+                    <span className="pf-muted">{copy.blankLink}</span>
+                  ) : isHttpLink(url) ? (
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="pf-link">
+                      {url}
+                    </a>
+                  ) : (
+                    url
+                  )}
+                </CardField>
+              );
+            })}
+          </CardFields>
+        </section>
+      </div>
 
       <QrCodeFormModal
         opened={dialog === 'edit'}
