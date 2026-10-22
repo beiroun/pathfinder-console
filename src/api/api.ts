@@ -16,7 +16,10 @@ import type {
 export const api = {
   // === AUTH ===
   login: async (credentials: AuthRequest): Promise<AuthResponse> => {
-    const response = await axiosInstance.post<BaseResponse<AuthResponse>>('/auth/login', credentials);
+    const response = await axiosInstance.post<BaseResponse<AuthResponse>>(
+      '/auth/login',
+      credentials
+    );
     return response.data.data;
   },
 
@@ -25,6 +28,7 @@ export const api = {
   },
 
   // === PLATFORM ===
+  // Public (permitAll on the server): the footer of the login page reads it too
   serverInfo: async (): Promise<ServerInfo> => {
     const response = await axiosInstance.get<BaseResponse<ServerInfo>>('/info');
     return response.data.data;
@@ -37,7 +41,9 @@ export const api = {
   },
 
   getQrCode: async (slug: string): Promise<QrView> => {
-    const response = await axiosInstance.get<BaseResponse<QrView>>(`/qr/${slug}`);
+    const response = await axiosInstance.get<BaseResponse<QrView>>(
+      `/qr/${encodeURIComponent(slug)}`
+    );
     return response.data.data;
   },
 
@@ -47,19 +53,22 @@ export const api = {
   },
 
   updateQrCode: async (slug: string, dto: UpdateQrRequest): Promise<QrView> => {
-    const response = await axiosInstance.put<BaseResponse<QrView>>(`/qr/${slug}`, dto);
+    const response = await axiosInstance.put<BaseResponse<QrView>>(
+      `/qr/${encodeURIComponent(slug)}`,
+      dto
+    );
     return response.data.data;
   },
 
   deleteQrCode: async (slug: string): Promise<void> => {
-    await axiosInstance.delete(`/qr/${slug}`);
+    await axiosInstance.delete(`/qr/${encodeURIComponent(slug)}`);
   },
 
   // The image endpoint is Bearer-protected, so a plain <img src> cannot reach it (the browser will not attach
   // the Authorization header). The bytes are fetched through the authed axios instance as a Blob; the caller
   // turns it into an object URL for preview and download.
   getQrImage: async (slug: string, format: QrImageFormat = 'png', size = 512): Promise<Blob> => {
-    const response = await axiosInstance.get(`/qr/${slug}/image`, {
+    const response = await axiosInstance.get(`/qr/${encodeURIComponent(slug)}/image`, {
       params: { format, size },
       responseType: 'blob'
     });

@@ -1,0 +1,99 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+/*
+ * AdaptiveTable: fixed layout from the computed widths, cells wrap instead of widening the
+ * table, the heading's right edge resizes the column. Every colour is a token from tokens.css.
+ */
+.pf-table td {
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
+
+.pf-table th {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pf-table th[data-with-columns-menu] {
+  padding-right: 36px;
+}
+
+/* inline-flex keeps the text-align of the heading (centred and right-aligned columns) */
+.pf-table__heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+  vertical-align: middle;
+}
+
+.pf-table__heading-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pf-table__resize {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  touch-action: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* A phone shows only the columns of priority 1 and has no edge worth dragging; the 8px strip only stole the taps
+   that sort a column and saved a width on a slipped finger */
+@media (max-width: 47.99em) {
+  .pf-table__resize {
+    display: none;
+  }
+}
+
+.pf-table__resize::after {
+  content: '';
+  position: absolute;
+  top: 25%;
+  bottom: 25%;
+  right: 3px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--pf-hairline);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.pf-table th:hover .pf-table__resize::after {
+  opacity: 1;
+}
+
+.pf-table__resize:hover::after,
+.pf-table__resize:focus-visible::after {
+  top: 0;
+  bottom: 0;
+  background: var(--pf-brand);
+  opacity: 1;
+}
+
+.pf-table__resize:focus-visible {
+  outline: none;
+}
+
+.pf-table__columns-control {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+/* While a column is dragged: the resize cursor everywhere, no text selection */
+body.pf-table-resizing,
+body.pf-table-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}

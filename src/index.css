@@ -1,19 +1,20 @@
 /* SPDX-License-Identifier: BUSL-1.1 */
 /* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+/* Page-local styles of Pathfinder QR; the skin, the shell and the motion live in src/theme */
 
-/**
- * Global stylesheet entry point. Split into token-driven modules under ./styles.
- * Order matters: fonts and tokens first, then the base layer, then components.
- */
-@import './styles/fonts.css';
-@import './styles/tokens.css';
-@import './styles/base.css';
-@import './styles/typography.css';
-@import './styles/buttons.css';
-@import './styles/forms.css';
-@import './styles/cards.css';
-@import './styles/feedback.css';
-@import './styles/user-card.css';
-@import './styles/auth.css';
-@import './styles/qr.css';
-@import './styles/footer.css';
+/* The rendered code keeps its own white quiet zone (part of the image); the frame around it follows the theme */
+.qr-preview {
+  min-height: 280px;
+  padding: 16px;
+  border: 1px solid var(--pf-hairline);
+  border-radius: var(--pf-r-lg);
+  background: var(--pf-surface-alt);
+}
+
+.qr-preview__image {
+  display: block;
+  width: min(260px, 100%);
+  height: auto;
+  border-radius: var(--pf-r-md);
+  cursor: copy;
+}

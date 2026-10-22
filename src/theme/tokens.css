@@ -1,0 +1,116 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+/*
+ * Design tokens of the console. Sky #12C3F4 is the product cyan (the mark, highlights), blue #2692BE the action
+ * colour, terracotta #E66C37 the accent. Mantine's own semantic variables (body, text, dimmed, default border) come
+ * from themeMantine.ts; these tokens cover what Mantine has no name for - the top bar, the roles of the three
+ * colours, the dark canvas.
+ *
+ * Roles, not taste: blue = action, sky = brand and highlight, terracotta = attention.
+ */
+:root {
+  --pf-brand: #2692be;
+  --pf-brand-hover: #1c799f;
+  --pf-brand-ink: #1c799f; /* the blue as text: links, subtle buttons (4.9:1 on white) */
+  --pf-brand-wash: #deecf2;
+  --pf-brand-wash-ink: #176180;
+  --pf-sky: #12c3f4; /* never text, never a button: 2.1:1 on white */
+  --pf-sky-wash: #dbf0f5; /* the selected row */
+  --pf-sky-ink: #036580;
+  --pf-accent: #e66c37;
+  --pf-accent-ink: #be4c21; /* the accent as text: kicker, active navigation item (4.95:1) */
+  --pf-accent-wash: #f3e4dd;
+  --pf-ok: #12b886;
+  --pf-ok-wash: #e6fcf5;
+  --pf-ok-ink: #087f5b;
+  --pf-warn: #f08c00;
+  --pf-warn-wash: #fff4e6;
+  --pf-warn-ink: #b35c00;
+  --pf-danger: #e03131;
+  --pf-danger-wash: #fff5f5;
+  --pf-danger-ink: #c92a2a;
+
+  --pf-canvas: #ffffff;
+  --pf-paper: #ffffff;
+  --pf-surface-alt: #f7f7f8; /* code chips, grey badges */
+  --pf-field: #ffffff;
+  --pf-hover: #f1f2f3;
+  --pf-ink: #0a0a0a;
+  --pf-ink-soft: #58595b; /* secondary text, the palette's dark grey (7:1) */
+  --pf-ash: #a6a7aa; /* column headings, placeholders, the footer */
+  --pf-hairline: #e6e7e9; /* the only structural divider */
+
+  /* Top bar: the canvas of the dark scheme in both schemes (Andrei, 2026-10-13); white text, alphas for the rest */
+  --pf-topbar-bg: #0e2a38;
+  --pf-topbar-fg: #ffffff;
+  --pf-topbar-muted: rgba(255, 255, 255, 0.66);
+  --pf-topbar-hover: rgba(255, 255, 255, 0.12);
+  --pf-topbar-border: rgba(255, 255, 255, 0.22);
+  --pf-topbar-line: #0e2a38; /* no line on the white canvas: the bar's edge is the bar itself */
+  /* The page dimmed under the phone menu: the bar's navy, not a grey */
+  --pf-scrim: rgba(14, 42, 56, 0.4);
+
+  --pf-font: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pf-r-sm: 6px;
+  --pf-r-md: 8px;
+  --pf-r-lg: 12px;
+  --pf-r-pill: 9999px;
+  --pf-topbar-h: 56px;
+  --pf-sidenav-w: 240px;
+  /* The fluid step of every spacing of the console, 0 to 16px by the tighter side of the screen: the width from 1280
+     to 1920px, the viewport height from 600 to 1000px. A small laptop (1280×720) gets 0, full HD gets the whole step;
+     the gutter, Mantine's spacing scale (themeMantine.ts), the list rows and the menu grow with it */
+  --pf-fluid: clamp(0px, min(2.5vw - 32px, 4vh - 24px), 16px);
+  /* The gutter of the working area on every side: 16px on a small laptop, a tablet and a phone, 32px on full HD */
+  --pf-gutter: calc(16px + var(--pf-fluid));
+  /* The vertical padding of a list row (the list framework's table): 4px on a small laptop, 6px on full HD */
+  --pf-list-row-py: calc(4px + var(--pf-fluid) / 8);
+  --pf-page-max: 1400px;
+  /* A screen that fits the viewport (a list with its table scrolling inside): the bar and two gutters off.
+     dvh, not vh: on a phone vh counts the space under the browser's address bar and the bottom of the list hides */
+  --pf-page-h: calc(100dvh - var(--pf-topbar-h) - 2 * var(--pf-gutter));
+
+  /* Motion: restrained – opacity and a short travel, no scale, no springs. The durations are the
+     only three; `prefers-reduced-motion` turns every one of them off (motion.css) */
+  --pf-dur-fast: 120ms; /* hover, press, a colour that changes */
+  --pf-dur-base: 160ms; /* menus, tooltips, dropdowns, a panel that folds */
+  --pf-dur-slow: 220ms; /* modals, the content of a new page, the login card */
+  --pf-ease-out: cubic-bezier(0.2, 0.7, 0.2, 1); /* what appears: quick start, soft landing */
+  --pf-ease-in: cubic-bezier(0.4, 0, 1, 1); /* what leaves */
+  --pf-rise: 6px; /* how far appearing content travels up into place */
+  --pf-skeleton: #e6e7e9; /* the bar of a loading row */
+  --pf-shimmer: rgba(255, 255, 255, 0.75); /* the light running over it */
+}
+
+/* Dark: the canvas is a deep tone of the brand blue (hue 200), not a grey; every role recomputed for it and checked
+   for contrast. The bar equals the canvas here, so a hairline marks its edge. */
+[data-mantine-color-scheme='dark'] {
+  --pf-brand-hover: #3c9dc4;
+  --pf-brand-ink: #4da6ca;
+  --pf-brand-wash: #15475e;
+  --pf-brand-wash-ink: #74b9d5;
+  --pf-sky-wash: #0f556d;
+  --pf-sky-ink: #12c3f4;
+  --pf-accent-ink: #ea8153;
+  --pf-accent-wash: #4a3c38;
+  --pf-ok-wash: #0f524e;
+  --pf-ok-ink: #5ecfad;
+  --pf-warn-wash: #4d4528;
+  --pf-warn-ink: #f3a538;
+  --pf-danger-wash: #492c36;
+  --pf-danger-ink: #ec7f7f;
+
+  --pf-canvas: #0e2a38;
+  --pf-paper: #153849;
+  --pf-surface-alt: #0b222d;
+  --pf-field: #0b222d; /* sunken to the canvas, so a field shows on the paper of a modal as well */
+  --pf-hover: #1d4458;
+  --pf-ink: #eff3f5;
+  --pf-ink-soft: #cddde4;
+  --pf-ash: #95b6c6;
+  --pf-hairline: #2a586f;
+  --pf-topbar-line: #2a586f;
+  --pf-scrim: rgba(4, 14, 19, 0.6);
+  --pf-skeleton: #1d4458;
+  --pf-shimmer: rgba(255, 255, 255, 0.07);
+}

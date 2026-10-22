@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE.
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { AUTH_PATH } from '../routes/paths';
 
 // Same-origin by default: the console's nginx (and vite's dev server) proxy /api to the server. An absolute base
 // is compiled in only for a console served from another name than its API (see vite-env.d.ts).
@@ -94,7 +95,7 @@ axiosInstance.interceptors.response.use(
       isRefreshing = false;
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
-      window.location.href = '/auth';
+      window.location.href = AUTH_PATH;
       return Promise.reject(error);
     }
 
@@ -125,7 +126,7 @@ axiosInstance.interceptors.response.use(
       processQueue(null, refreshError);
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
-      window.location.href = '/auth';
+      window.location.href = AUTH_PATH;
       return Promise.reject(refreshError);
     } finally {
       isRefreshing = false;

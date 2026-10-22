@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE.
-import {
-  createContext,
-  useState,
-  type ReactNode,
-  useContext,
-  useEffect
-} from 'react';
+import { createContext, useState, type ReactNode, useContext, useEffect } from 'react';
+import { Center, Loader } from '@mantine/core';
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
 import type { User, Role, AuthResponse } from '../types';
 import { api } from '../api/api';
+import { AUTH_PATH } from '../routes/paths';
 
 interface JwtPayload {
   sub: string; // username
@@ -117,15 +113,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       Cookies.remove('accessToken');
       Cookies.remove('refreshToken');
       setUser(null);
-      window.location.href = '/auth';
+      window.location.href = AUTH_PATH;
     }
   };
 
   if (isLoading) {
     return (
-      <div className="loader-screen">
-        <div className="spinner" />
-      </div>
+      <Center h="100dvh">
+        <Loader />
+      </Center>
     );
   }
 

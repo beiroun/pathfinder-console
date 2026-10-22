@@ -1,7 +1,7 @@
 {
-  "name": "Pathfinder Console",
-  "short_name": "Pathfinder",
-  "description": "Management console of Pathfinder by 84softworks – one QR code, the right store for every device",
+  "name": "Pathfinder QR",
+  "short_name": "Pathfinder QR",
+  "description": "Pathfinder QR by 84softworks – one QR code, the right store for every device",
   "start_url": "/",
   "icons": [
     {
@@ -17,7 +17,7 @@
       "purpose": "any maskable"
     }
   ],
-  "theme_color": "#0a0a0a",
+  "theme_color": "#0E2A38",
   "background_color": "#f5f5f5",
   "display": "standalone"
 }

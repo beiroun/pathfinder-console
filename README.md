@@ -1,34 +1,39 @@
-# Pathfinder Console
+# Pathfinder Console – «Pathfinder QR»
 
 Management console of [Pathfinder](https://github.com/beiroun/pathfinder) by
 [84softworks](https://84softworks.com): the QR codes, their four platform
-targets, the rendered image and the per-platform scan statistics. A single-page
-application served by nginx, talking to
+targets, the rendered image and the per-platform scan statistics. In the
+interface the product is called **Pathfinder QR**. A single-page application
+served by nginx, talking to
 [`pathfinder-server`](https://github.com/beiroun/pathfinder-server) over `/api`.
 
 ---
 
 ## Screens
 
-| Screen | What it does |
-|---|---|
-| Login | sign-in with a login from the server's environment (`PF_ADMIN_USERS` / `PF_VIEWER_USERS`) |
-| Dashboard | every code with its public link (click to copy), total scans; search by name or slug; create / edit / delete for administrators, read-only for viewers |
-| Code form | name, optional slug (generated when blank, immutable afterwards), the four targets in resolution order iOS → Huawei → Android → Desktop; the desktop link is the fallback and is required |
-| Code details | the rendered QR (click to copy the PNG), PNG / SVG download, the public link, scan statistics per platform, all targets, dates |
+| Screen | Address | What it does |
+|---|---|---|
+| Login | `/auth` | sign-in with a login from the server's environment (`PF_ADMIN_USERS` / `PF_VIEWER_USERS`) |
+| QR codes | `/qr` | every code at once: smart search by name, slug and any link (an exact slug first), sort by any column heading (descending → ascending → default), pages of 25 / 50 / 100 / 200; the search, the sort and the page live in the URL, so a link, F5 and Back keep the selection. A row opens the code's card; «Новый QR-код» for administrators |
+| Card | `/qr/<slug>` | the rendered QR (click copies the PNG), scans per platform with the share of all, the public link and the four targets. «Действия»: download PNG / SVG and copy the image for every role; edit and delete (with a confirmation) for administrators |
+| Form | `/create-qr`, `/qr/<slug>/edit` | name, slug (create only: `A–Z a–z 0–9 - _`, 3–64, generated when blank, immutable afterwards), the four targets in resolution order iOS → Huawei → Android → Desktop; only `http(s)` links; the desktop link is the fallback and is required. Saving opens the card |
+| Errors | any other address | 404 inside the shell; a viewer on a form page reads «Недостаточно прав» on the same address |
 
-Roles come from the token: `ADMIN` edits, `VIEWER` reads. Both land on the same
-dashboard; write actions are hidden for viewers and refused by the server.
+Roles come from the token: `ADMIN` (badge ADM) edits, `VIEWER` (badge RD)
+reads; the elements of an action a role may not take are not rendered, and the
+server refuses it anyway. Timestamps are the server's wall time
+(`LocalDateTime` in its `PF_TZ`), shown as they are.
 
-The interface is Russian.
+The interface is Russian, light and dark (follows the system until the
+operator picks one in the top bar).
 
 ## Stack
 
 | | |
 |---|---|
 | Language | TypeScript 7, strict |
-| UI | React 19.3, plain CSS with design tokens (`src/styles`) |
-| API | axios with a bearer interceptor: refresh-and-retry on 401 / 403, one queued refresh for parallel requests |
+| UI | React 19.3, Mantine 9.7 (theme in `src/theme`), Tabler icons, self-hosted Inter |
+| API | axios with a bearer interceptor: refresh-and-retry on 401 / 403, one queued refresh for parallel requests; a small `useApiQuery` hook keeps the old data on screen while a request reloads it |
 | Routing | React Router 8.4 (`createBrowserRouter`) |
 | Build | Vite 8.3, Node 24 LTS |
 | Image | multi-stage Node → nginx 1.30 on `127.0.0.1:8081`: static files plus `location /api` proxied to the server on `127.0.0.1:8080`; published as `ghcr.io/beiroun/pathfinder-console:<version>` on a tagged release |
@@ -39,18 +44,24 @@ Conventions: functional components and hooks, the API in `api/`, pages under
 ## Structure (`src/`)
 
 ```
-api/          axiosInstance (bearer, refresh queue), api (every call of the server)
-context/      AuthContext (session from the token cookies), FeedbackContext (toasts + confirm dialog)
-components/   QrFormModal, QrDetailModal, CopyableLink, ConfirmDialog, AlertToaster, AppFooter, icons
-pages/        Auth, Dashboard
-routes/       createBrowserRouter, created once outside the React tree
-styles/       fonts, tokens, base, typography, buttons, forms, cards, feedback, user-card, auth, qr, footer
+api/          axiosInstance (bearer, refresh queue), api (every call of the server), useApiQuery, queries
+context/      AuthContext (session from the token cookies)
+theme/        themeMantine (palettes of both schemes, component defaults), tokens, fonts, shell, motion
+components/   Layout (top bar + side column), Header, NavigationMenu, ShellFooter (versions), AuthForm,
+              PathfinderMark, ThemeModeSwitcher, UserInfo, RouteGuards
+ui/           the frame: list/ (filters bar, smart search, pagination, list table), table/ (column widths and
+              hiding by priority), motion/, ErrorPage, EntityCardHeader, EntityActionsMenu, ConfirmActionModal,
+              PageSection, MetricTile, CopyableId, RoleBadge
+hooks/        useUrlFilters (state in the URL), useClientList (search / sort / pages in memory), useDocumentTitle, …
+pages/        Auth, QrCodesList, QrCodeCard, QrCodeForm, NotFound, Forbidden
+routes/       paths, createBrowserRouter (created once outside the React tree)
 types/        the API contract of the server
-utils/        format helpers, clipboard, blob download, API error text
+utils/        smart search, time, role badges, notifications, blob download, API error text
 ```
 
 The server envelope `{data, message, error}` is unwrapped in `api.ts`; a
-failure's `error.localizedMessage` is what the operator sees in a toast.
+failure's `error.localizedMessage` is what the operator sees («Не выполнено»
+notification, or the error over the list with «Повторить»).
 
 ## Public assets
 
@@ -59,7 +70,9 @@ failure's `error.localizedMessage` is what the operator sees in a toast.
   `apple-touch-icon.png` 180 and maskable 192/512 (opaque squares),
   `site.webmanifest`, `og-image.png` 1200×630 for link previews. Generated from
   the geometry of `public/logo.svg` by `make_icons.py` (kept outside this
-  repository); bump `?v=` in `index.html` when the art changes.
+  repository); bump `?v=` in `index.html` when the art changes. The same mark
+  is drawn in the interface by `PathfinderMark` (alone in white on the top bar,
+  on its dark tile on the login card).
 - **Fonts** - Inter is self-hosted (`public/fonts`, Latin and Cyrillic subsets
   of the variable font): no CDN request, no flash of a system font.
 - **Metadata** - `index.html` carries the description, canonical, Open Graph,

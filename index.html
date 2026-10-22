@@ -4,22 +4,28 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <!-- Self-hosted font (@font-face in src/styles/fonts.css). Preload both scripts: the console is Russian with
+    <!-- Self-hosted font (@font-face in src/theme/fonts.css). Preload both scripts: the console is Russian with
          Latin slugs and URLs on every screen, so the first paint needs both files. -->
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-cyrillic.woff2" crossorigin />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/inter-cyrillic.woff2"
+      crossorigin
+    />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin.woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#0E2A38" />
     <!-- A management console behind a login: it has nothing to offer a crawler and should not be findable. The
          social and structured-data tags below are for link previews and the browser, not for search. -->
     <meta name="robots" content="noindex, nofollow" />
     <meta
       name="description"
-      content="Management console of Pathfinder by 84softworks: QR codes that send every device to the right place – App Store, Google Play, AppGallery or the website – with per-platform scan statistics."
+      content="Pathfinder QR by 84softworks: QR codes that send every device to the right place – App Store, Google Play, AppGallery or the website – with per-platform scan statistics."
     />
-    <meta name="application-name" content="Pathfinder Console" />
-    <meta name="apple-mobile-web-app-title" content="Pathfinder" />
+    <meta name="application-name" content="Pathfinder QR" />
+    <meta name="apple-mobile-web-app-title" content="Pathfinder QR" />
     <link rel="canonical" href="https://pathfinder-console.84softworks.com/" />
 
     <!-- Favicons / app icons: one round mark everywhere (dark disc inside a cyan ring, the QR finder pattern),
@@ -39,20 +45,29 @@
          change them together with the canonical when the console lives on another name. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Pathfinder" />
-    <meta property="og:title" content="Pathfinder Console" />
-    <meta property="og:description" content="Management console of Pathfinder by 84softworks – one QR code, the right store for every device." />
+    <meta property="og:title" content="Pathfinder QR" />
+    <meta
+      property="og:description"
+      content="Pathfinder QR by 84softworks – one QR code, the right store for every device."
+    />
     <meta property="og:url" content="https://pathfinder-console.84softworks.com/" />
     <meta property="og:image" content="https://pathfinder-console.84softworks.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Pathfinder by 84softworks – one QR code, the right store for every device" />
+    <meta
+      property="og:image:alt"
+      content="Pathfinder by 84softworks – one QR code, the right store for every device"
+    />
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:locale:alternate" content="en_US" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Pathfinder Console" />
-    <meta name="twitter:description" content="Management console of Pathfinder by 84softworks – one QR code, the right store for every device." />
+    <meta name="twitter:title" content="Pathfinder QR" />
+    <meta
+      name="twitter:description"
+      content="Pathfinder QR by 84softworks – one QR code, the right store for every device."
+    />
     <meta name="twitter:image" content="https://pathfinder-console.84softworks.com/og-image.png" />
 
     <!-- Structured data: the site name for browsers and previews, and the organization behind the product -->
@@ -60,9 +75,13 @@
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "Pathfinder Console",
+        "name": "Pathfinder QR",
         "url": "https://pathfinder-console.84softworks.com/",
-        "publisher": { "@type": "Organization", "name": "84softworks", "url": "https://84softworks.com/" }
+        "publisher": {
+          "@type": "Organization",
+          "name": "84softworks",
+          "url": "https://84softworks.com/"
+        }
       }
     </script>
     <script type="application/ld+json">
@@ -72,11 +91,34 @@
         "name": "84softworks",
         "url": "https://84softworks.com/",
         "logo": "https://84softworks.com/favicon-96x96.png",
-        "founder": { "@type": "Person", "name": "Andrei Baranov", "url": "https://github.com/beiroun" }
+        "founder": {
+          "@type": "Person",
+          "name": "Andrei Baranov",
+          "url": "https://github.com/beiroun"
+        }
       }
     </script>
 
-    <title>Pathfinder Console</title>
+    <!-- Applies the saved colour scheme before React mounts (what Mantine's ColorSchemeScript renders), so a dark
+         console never flashes white. Same storage key and default ("auto") as MantineProvider in main.tsx. -->
+    <script>
+      try {
+        var storedScheme = window.localStorage.getItem('mantine-color-scheme-value');
+        var scheme =
+          storedScheme === 'light' || storedScheme === 'dark' || storedScheme === 'auto'
+            ? storedScheme
+            : 'auto';
+        var computedScheme =
+          scheme !== 'auto'
+            ? scheme
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.setAttribute('data-mantine-color-scheme', computedScheme);
+      } catch (e) {}
+    </script>
+
+    <title>Pathfinder QR</title>
   </head>
   <body>
     <div id="root"></div>
