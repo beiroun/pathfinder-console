@@ -9,6 +9,7 @@ import { Login } from '@/pages/Login/Login';
 import { NotFound } from '@/pages/NotFound/NotFound';
 import { QrCodeCard } from '@/pages/QrCodeCard/QrCodeCard';
 import { QrCodes } from '@/pages/QrCodes/QrCodes';
+import { Stats } from '@/pages/Stats/Stats';
 import { pageHandle } from '@/shared/documentTitle';
 import { routePaths } from '@/shared/navigation';
 
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
         element: <QrCodeCard />,
         handle: pageHandle('qrCode')
       },
+      { path: routePaths.stats, element: <Stats />, handle: pageHandle('stats') },
       { path: routePaths.about, element: <About />, handle: pageHandle('about') },
       { path: '*', element: <NotFound />, handle: pageHandle('notFound') }
     ]

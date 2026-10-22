@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE.
-import { IconInfoCircle, IconQrcode, type TablerIcon } from '@tabler/icons-react';
+import { IconChartBar, IconInfoCircle, IconQrcode, type TablerIcon } from '@tabler/icons-react';
 
 import type { Copy } from '@/i18n/dict';
 
@@ -9,11 +9,16 @@ export const routePaths = {
   login: '/login',
   home: '/',
   qrCodes: '/qr-codes',
+  stats: '/stats',
   about: '/about'
 } as const;
 
 /** The card page of one QR code, by its slug. */
 export const qrCodePath = (slug: string) => `${routePaths.qrCodes}/${encodeURIComponent(slug)}`;
+
+/** The statistics narrowed to one code. */
+export const codeStatsPath = (slug: string) =>
+  `${routePaths.stats}?slug=${encodeURIComponent(slug)}`;
 
 interface NavigationItem {
   path: string;
@@ -29,5 +34,6 @@ interface NavigationItem {
 /** Navigation entries in the order they appear in the side column (and the sheet on a phone). */
 export const navigationItems: ReadonlyArray<NavigationItem> = [
   { path: routePaths.qrCodes, labelKey: 'qrCodes', icon: IconQrcode },
+  { path: routePaths.stats, labelKey: 'stats', icon: IconChartBar },
   { path: routePaths.about, labelKey: 'about', icon: IconInfoCircle }
 ];

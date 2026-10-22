@@ -8,6 +8,7 @@ import type {
   CreateQrRequest,
   QrImageFormat,
   QrView,
+  ScanReport,
   ServerInfo,
   UpdateQrRequest
 } from '../types';
@@ -73,5 +74,13 @@ export const api = {
       responseType: 'blob'
     });
     return response.data;
+  },
+
+  /** The statistics of the calendar days `from`..`to` (both included), of one code or of every code. */
+  getScanReport: async (from: string, to: string, slug?: string): Promise<ScanReport> => {
+    const response = await axiosInstance.get<BaseResponse<ScanReport>>('/stats/scans', {
+      params: { from, to, slug }
+    });
+    return response.data.data;
   }
 };

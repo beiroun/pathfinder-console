@@ -1,0 +1,137 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/* Click-to-copy "magic link": only the URL text is the click target, drawn in the accent of the skin - a wash on
+   hover, the solid accent on copy, accent stars after it. Square corners, like every surface of the skin. */
+.pf-copy-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  /* The padding makes the highlighted area a touch wider than the text */
+  padding: 2px 8px;
+  margin-left: -8px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--pf-ink-soft);
+  font: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-align: left;
+  cursor: pointer;
+  /* 0.2s so the copied fill eases in and back out */
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.pf-copy-link:hover {
+  background: color-mix(in srgb, var(--pf-accent) 12%, transparent);
+  color: var(--pf-ink);
+}
+
+.pf-copy-link:focus-visible {
+  outline: 2px solid var(--pf-accent);
+  outline-offset: 1px;
+}
+
+.pf-copy-link--copied,
+.pf-copy-link--copied:hover {
+  background: var(--pf-accent);
+  border-color: var(--pf-accent);
+  color: var(--pf-on-accent);
+}
+
+.pf-copy-link--failed {
+  border-color: var(--mantine-color-red-6);
+}
+
+.pf-copy-link__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The card: the whole URL, wrapped, hugging its content */
+.pf-copy-link--multiline {
+  align-self: flex-start;
+}
+
+.pf-copy-link--multiline .pf-copy-link__text {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-all;
+}
+
+/* "Copied" is for screen readers only - the fill says it to the eye; a refused copy is written out */
+.pf-copy-link__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pf-copy-link--failed + .pf-copy-link__status {
+  position: static;
+  display: block;
+  width: auto;
+  height: auto;
+  margin-top: 4px;
+  clip-path: none;
+  white-space: normal;
+  font-size: var(--pf-text-caption);
+  color: var(--mantine-color-red-6);
+}
+
+/* The one-shot burst: portalled over <body>, fixed onto the link's box, so stars fly free of a list's scroll */
+.pf-spark-burst {
+  position: fixed;
+  pointer-events: none;
+  z-index: 2000;
+  color: var(--pf-accent);
+}
+
+.pf-spark {
+  position: absolute;
+  width: var(--spark-size);
+  height: var(--spark-size);
+  /* Each star centred on its emit point, then travelling from there */
+  margin: calc(var(--spark-size) / -2) 0 0 calc(var(--spark-size) / -2);
+  opacity: 0;
+  transform: translate(0, 0) scale(0) rotate(0deg);
+  /* The glow halo of the magic */
+  filter: drop-shadow(0 0 3px var(--pf-accent));
+  will-change: transform, opacity;
+  animation-name: pf-spark-fly;
+  animation-timing-function: cubic-bezier(0.18, 0.7, 0.3, 1);
+  animation-fill-mode: forwards;
+  /* duration and delay come inline, different per star */
+}
+
+@keyframes pf-spark-fly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0) rotate(0deg);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(calc(var(--spark-tx) * 0.28), calc(var(--spark-ty) * 0.28)) scale(1.2)
+      rotate(calc(var(--spark-rot) * 0.3));
+  }
+  60% {
+    opacity: 0.9;
+    transform: translate(calc(var(--spark-tx) * 0.72), calc(var(--spark-ty) * 0.72)) scale(0.85)
+      rotate(calc(var(--spark-rot) * 0.7));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--spark-tx), var(--spark-ty)) scale(0.2) rotate(var(--spark-rot));
+  }
+}

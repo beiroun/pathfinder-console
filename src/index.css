@@ -30,3 +30,11 @@
   width: min(240px, 100%);
   height: auto;
 }
+
+/* "Statistics of the code →" under the scan metrics */
+.pf-card__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+}

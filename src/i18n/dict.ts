@@ -5,6 +5,7 @@
 // (the wordmark, role abbreviations, numbers, hosts, e-mail) live in the components.
 import type { Role } from '@/types';
 import type { QrPlatform } from '@/shared/qrTargets';
+import type { PeriodPreset } from '@/pages/Stats/statsModel';
 
 export type Lang = 'en' | 'ru';
 
@@ -33,6 +34,7 @@ export interface Copy {
   byline: string;
   nav: {
     qrCodes: string;
+    stats: string;
     about: string;
     menu: string;
   };
@@ -41,6 +43,7 @@ export interface Copy {
     qrCodes: PageCopy;
     /** Card of one code: the title names the browser tab, the kicker sits above the code's name. */
     qrCode: PageCopy;
+    stats: PageCopy;
     about: PageCopy;
     notFound: PageCopy;
   };
@@ -63,6 +66,9 @@ export interface Copy {
     copy: string;
     copied: string;
     copyValue: (label: string) => string;
+    /** Over a link that copies itself on a click. */
+    clickToCopy: string;
+    copyRefused: string;
     edit: string;
     delete: string;
     /** The menu of a record's changes in its card. */
@@ -115,6 +121,7 @@ export interface Copy {
     columns: {
       name: string;
       slug: string;
+      link: string;
       scans: string;
       updated: string;
       created: string;
@@ -134,6 +141,7 @@ export interface Copy {
     downloadPng: string;
     downloadSvg: string;
     downloadFailed: string;
+    statsLink: string;
     scansSection: string;
     scansHint: string;
     totalScans: string;
@@ -170,6 +178,66 @@ export interface Copy {
     body: string;
     back: string;
   };
+  stats: {
+    periods: Record<PeriodPreset, string>;
+    from: string;
+    to: string;
+    code: string;
+    allCodes: string;
+    fromAfterTo: string;
+    tooLong: (days: number) => string;
+    trackingSince: (when: string) => string;
+    trackingNotStarted: string;
+    loading: string;
+    /** Who scanned: the device. */
+    devices: Record<QrPlatform, string>;
+    /** Where the scanner was sent: the link of that platform. */
+    destinations: Record<QrPlatform, string>;
+    /** Monday first, as the server counts ISO weekdays. */
+    weekdays: string[];
+    kpi: {
+      total: string;
+      noCompare: string;
+      noPrevious: (days: number) => string;
+      change: (signedPercent: string, days: number, previous: string) => string;
+      perDay: string;
+      perDayNote: (days: number) => string;
+      toStores: string;
+      toStoresNote: (part: string, whole: string) => string;
+      topCode: string;
+    };
+    noScans: string;
+    daily: {
+      title: string;
+      lede: string;
+      asTable: string;
+      asChart: string;
+      day: string;
+      total: string;
+    };
+    whoScans: { title: string; lede: string };
+    whereTo: {
+      title: string;
+      lede: string;
+      fallback: (device: string, scans: string, store: string) => string;
+    };
+    codes: {
+      title: string;
+      lede: string;
+      code: string;
+      scans: string;
+      share: string;
+      devices: string;
+    };
+    heatmap: {
+      title: string;
+      busiest: (weekday: string, hours: string, scans: string) => string;
+      zoneNote: string;
+      label: string;
+      less: string;
+      more: string;
+    };
+  };
   about: {
     intro: string;
     versions: string;
@@ -204,6 +272,7 @@ const en: Copy = {
   byline: 'by 84softworks',
   nav: {
     qrCodes: 'QR codes',
+    stats: 'Statistics',
     about: 'About',
     menu: 'Menu'
   },
@@ -211,6 +280,7 @@ const en: Copy = {
     login: { title: 'Log in', kicker: 'Management console' },
     qrCodes: { title: 'QR codes', kicker: 'One code, the right store for every device' },
     qrCode: { title: 'QR code', kicker: 'QR code' },
+    stats: { title: 'Statistics', kicker: 'Who scanned, where they went, from which code' },
     about: { title: 'Pathfinder QR', kicker: 'About and legal' },
     notFound: { title: 'Page not found', kicker: 'Nothing at this address' }
   },
@@ -232,6 +302,8 @@ const en: Copy = {
     copy: 'Copy',
     copied: 'Copied',
     copyValue: label => `Copy ${label}`,
+    clickToCopy: 'Click to copy the link',
+    copyRefused: 'The browser did not allow copying – copy the link by hand',
     edit: 'Edit',
     delete: 'Delete',
     actions: 'Actions',
@@ -284,6 +356,7 @@ const en: Copy = {
     columns: {
       name: 'Name',
       slug: 'Slug',
+      link: 'Link in the QR code',
       scans: 'Scans',
       updated: 'Changed',
       created: 'Created'
@@ -308,6 +381,7 @@ const en: Copy = {
     downloadPng: 'Download PNG',
     downloadSvg: 'Download SVG',
     downloadFailed: 'The image did not download',
+    statsLink: 'Statistics of the code',
     scansSection: 'Scans',
     scansHint: 'The platform is recognised by the device that scanned the code',
     totalScans: 'scans in total',
@@ -344,6 +418,77 @@ const en: Copy = {
   notFound: {
     body: 'There is nothing at this address.',
     back: 'Back to the QR codes'
+  },
+  stats: {
+    periods: { '7': '7 days', '30': '30 days', '90': '90 days', '365': 'Year', custom: 'Custom' },
+    from: 'From',
+    to: 'To',
+    code: 'Code',
+    allCodes: 'All codes',
+    fromAfterTo: 'The start is after the end',
+    tooLong: days => `No more than ${days} days`,
+    trackingSince: when =>
+      `Scans by day are recorded since ${when}: before that only the lifetime counters of the code cards exist.`,
+    trackingNotStarted:
+      'Scans by day are recorded from the first scan after this update. The lifetime counters are in the code cards.',
+    loading: 'Loading the statistics',
+    devices: {
+      ios: 'iOS',
+      huawei: 'Huawei',
+      android: 'Android',
+      desktop: 'Computers and others'
+    },
+    destinations: {
+      ios: 'App Store',
+      huawei: 'AppGallery',
+      android: 'Google Play',
+      desktop: 'Website (Desktop link)'
+    },
+    weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    kpi: {
+      total: 'scans in the period',
+      noCompare: 'Nothing to compare with: the previous period is before the recording started',
+      noPrevious: days => `No scans in the previous ${days} days`,
+      change: (signedPercent, days, previous) =>
+        `${signedPercent} vs the previous ${days} days (${previous})`,
+      perDay: 'scans a day on average',
+      perDayNote: days => `over ${days} days`,
+      toStores: 'sent to the app stores',
+      toStoresNote: (part, whole) => `${part} of ${whole}: App Store, Google Play, AppGallery`,
+      topCode: 'scans of the top code'
+    },
+    noScans: 'No scans in the period',
+    daily: {
+      title: 'Scans by day',
+      lede: 'Colour – the device the code was scanned with',
+      asTable: 'Show as a table',
+      asChart: 'Show as a chart',
+      day: 'Day',
+      total: 'Total'
+    },
+    whoScans: { title: 'Who scans', lede: 'The device the code was scanned with' },
+    whereTo: {
+      title: 'Where they went',
+      lede: 'The link the code sent the person to',
+      fallback: (device, scans, store) =>
+        `${device} → website: ${scans} – the code has no ${store} link.`
+    },
+    codes: {
+      title: 'Which codes',
+      lede: 'Every code of the period, the most scanned on top; the bar – the share of devices',
+      code: 'Code',
+      scans: 'Scans',
+      share: 'Share',
+      devices: 'By device'
+    },
+    heatmap: {
+      title: 'When they scan',
+      busiest: (weekday, hours, scans) => `Most often – ${weekday}, ${hours} (${scans})`,
+      zoneNote: 'Weekday and hour – by the server clock',
+      label: 'Scans by weekday and hour',
+      less: 'less',
+      more: 'more'
+    }
   },
   about: {
     intro:
@@ -382,6 +527,7 @@ const ru: Copy = {
   byline: 'by 84softworks',
   nav: {
     qrCodes: 'QR-коды',
+    stats: 'Статистика',
     about: 'О консоли',
     menu: 'Меню'
   },
@@ -389,6 +535,7 @@ const ru: Copy = {
     login: { title: 'Вход', kicker: 'Консоль управления' },
     qrCodes: { title: 'QR-коды', kicker: 'Один код – нужный магазин на каждом устройстве' },
     qrCode: { title: 'QR-код', kicker: 'QR-код' },
+    stats: { title: 'Статистика', kicker: 'Кто сканировал, куда ушёл, из какого кода' },
     about: { title: 'Pathfinder QR', kicker: 'О консоли и правовая информация' },
     notFound: { title: 'Страница не найдена', kicker: 'По этому адресу ничего нет' }
   },
@@ -410,6 +557,8 @@ const ru: Copy = {
     copy: 'Копировать',
     copied: 'Скопировано',
     copyValue: label => `Копировать: ${label}`,
+    clickToCopy: 'Нажмите, чтобы скопировать ссылку',
+    copyRefused: 'Браузер не дал скопировать – скопируйте ссылку вручную',
     edit: 'Изменить',
     delete: 'Удалить',
     actions: 'Действия',
@@ -462,6 +611,7 @@ const ru: Copy = {
     columns: {
       name: 'Название',
       slug: 'Слаг',
+      link: 'Ссылка в QR-коде',
       scans: 'Сканы',
       updated: 'Изменён',
       created: 'Создан'
@@ -486,6 +636,7 @@ const ru: Copy = {
     downloadPng: 'Скачать PNG',
     downloadSvg: 'Скачать SVG',
     downloadFailed: 'Картинка не скачалась',
+    statsLink: 'Статистика кода',
     scansSection: 'Сканы',
     scansHint: 'Платформа определяется по устройству, с которого отсканировали код',
     totalScans: 'сканов всего',
@@ -523,6 +674,83 @@ const ru: Copy = {
   notFound: {
     body: 'По этому адресу ничего нет.',
     back: 'Вернуться к QR-кодам'
+  },
+  stats: {
+    periods: {
+      '7': '7 дней',
+      '30': '30 дней',
+      '90': '90 дней',
+      '365': 'Год',
+      custom: 'Свой период'
+    },
+    from: 'С',
+    to: 'По',
+    code: 'Код',
+    allCodes: 'Все коды',
+    fromAfterTo: 'Начало позже конца',
+    tooLong: days => `Не больше ${days} дней`,
+    trackingSince: when =>
+      `Сканы по дням записываются с ${when}: раньше этой даты есть только общие счётчики в карточках кодов.`,
+    trackingNotStarted:
+      'Сканы по дням начнут записываться с первого скана после обновления. Общие счётчики за всё время – в карточках кодов.',
+    loading: 'Загружаем статистику',
+    devices: {
+      ios: 'iOS',
+      huawei: 'Huawei',
+      android: 'Android',
+      desktop: 'Компьютеры и прочие'
+    },
+    destinations: {
+      ios: 'App Store',
+      huawei: 'AppGallery',
+      android: 'Google Play',
+      desktop: 'Сайт (ссылка Desktop)'
+    },
+    weekdays: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+    kpi: {
+      total: 'сканов за период',
+      noCompare: 'Сравнить не с чем: прошлый период раньше начала записи',
+      noPrevious: days => `В прошлые ${days} дн. сканов не было`,
+      change: (signedPercent, days, previous) =>
+        `${signedPercent} к прошлым ${days} дн. (${previous})`,
+      perDay: 'сканов в день в среднем',
+      perDayNote: days => `за ${days} дн.`,
+      toStores: 'ушли в магазины приложений',
+      toStoresNote: (part, whole) => `${part} из ${whole}: App Store, Google Play, AppGallery`,
+      topCode: 'сканов у лучшего кода'
+    },
+    noScans: 'За период сканов нет',
+    daily: {
+      title: 'Сканы по дням',
+      lede: 'Цвет – устройство, с которого отсканировали код',
+      asTable: 'Показать таблицей',
+      asChart: 'Показать графиком',
+      day: 'День',
+      total: 'Всего'
+    },
+    whoScans: { title: 'Кто сканирует', lede: 'Устройство, с которого отсканировали код' },
+    whereTo: {
+      title: 'Куда ушли',
+      lede: 'Ссылка, на которую код отправил человека',
+      fallback: (device, scans, store) =>
+        `${device} → сайт: ${scans} – у кода нет ссылки на ${store}.`
+    },
+    codes: {
+      title: 'Из каких кодов',
+      lede: 'Все коды за период, самые сканируемые сверху; полоса – доля устройств',
+      code: 'Код',
+      scans: 'Сканы',
+      share: 'Доля',
+      devices: 'По устройствам'
+    },
+    heatmap: {
+      title: 'Когда сканируют',
+      busiest: (weekday, hours, scans) => `Чаще всего – ${weekday}, ${hours} (${scans})`,
+      zoneNote: 'День недели и час – по времени сервера',
+      label: 'Сканы по дням недели и часам',
+      less: 'меньше',
+      more: 'больше'
+    }
   },
   about: {
     intro:

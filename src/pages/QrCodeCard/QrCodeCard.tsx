@@ -2,12 +2,13 @@
 // Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE.
 import { useEffect, useState } from 'react';
 import { Alert, Button, Group, Loader, Menu, Text, UnstyledButton } from '@mantine/core';
-import { IconCopy, IconDownload, IconPencil, IconTrash } from '@tabler/icons-react';
-import { useNavigate, useParams } from 'react-router';
+import { IconArrowRight, IconCopy, IconDownload, IconPencil, IconTrash } from '@tabler/icons-react';
+import { Link, useNavigate, useParams } from 'react-router';
 
 import { api } from '@/api/api';
 import { useQrCodeQuery } from '@/api/queries';
 import { ConfirmActionModal } from '@/components/ConfirmActionModal/ConfirmActionModal';
+import { CopyableLink } from '@/components/CopyableLink/CopyableLink';
 import { CardField, CardFields, CopyableValue } from '@/components/EntityCard/CardFields';
 import { EntityActionsMenu } from '@/components/EntityCard/EntityActionsMenu';
 import { EntityCardHeader } from '@/components/EntityCard/EntityCardHeader';
@@ -18,7 +19,7 @@ import { QrCodeFormModal } from '@/pages/QrCodes/QrCodeFormModal';
 import { describeApiError, isNotFound } from '@/shared/apiErrors';
 import { mayChangeQrCodes } from '@/shared/consoleRoles';
 import { downloadBlob } from '@/shared/downloadBlob';
-import { routePaths } from '@/shared/navigation';
+import { codeStatsPath, routePaths } from '@/shared/navigation';
 import { qrTargets, targetUrlOf } from '@/shared/qrTargets';
 import { formatServerTime } from '@/shared/serverTime';
 import { useGoBack } from '@/shared/useGoBack';
@@ -69,8 +70,8 @@ function useQrPreview(slug: string) {
 }
 
 /**
- * One QR code: the rendered image, the scans by platform and the links. "Actions" download and copy the image for
- * every role; administrators also edit and delete the code there.
+ * One QR code: the rendered image with its downloads under it, the scans by platform and the links. "Actions" copy
+ * the image for every role; administrators also edit and delete the code there.
  */
 export function QrCodeCard() {
   const { t } = useLang();
@@ -190,12 +191,6 @@ function QrCodeCardContent({
 
   const actions = (
     <EntityActionsMenu>
-      <Menu.Item leftSection={<IconDownload size={16} />} onClick={() => void download('png')}>
-        {copy.downloadPng}
-      </Menu.Item>
-      <Menu.Item leftSection={<IconDownload size={16} />} onClick={() => void download('svg')}>
-        {copy.downloadSvg}
-      </Menu.Item>
       <Menu.Item
         leftSection={<IconCopy size={16} />}
         disabled={!preview.blob}
@@ -256,6 +251,10 @@ function QrCodeCardContent({
             </div>
           ))}
         </div>
+        <Link to={codeStatsPath(qr.slug)} className="pf-link pf-card__more">
+          {copy.statsLink}
+          <IconArrowRight size={16} />
+        </Link>
       </section>
 
       <section className="pf-section">
@@ -277,6 +276,22 @@ function QrCodeCardContent({
               {copy.imageFailed}
             </Text>
           )}
+          <Group gap="sm">
+            <Button
+              variant="default"
+              leftSection={<IconDownload size={16} />}
+              onClick={() => void download('png')}
+            >
+              {copy.downloadPng}
+            </Button>
+            <Button
+              variant="default"
+              leftSection={<IconDownload size={16} />}
+              onClick={() => void download('svg')}
+            >
+              {copy.downloadSvg}
+            </Button>
+          </Group>
           <Text size="sm" c="dimmed">
             {copy.imageHint}
           </Text>
@@ -288,7 +303,7 @@ function QrCodeCardContent({
         <p className="pf-section__note">{t.qrCodes.resolveOrder}</p>
         <CardFields>
           <CardField label={copy.redirectUrl} wide>
-            <CopyableValue value={qr.redirect_url} label={copy.redirectUrl} />
+            <CopyableLink url={qr.redirect_url} multiline />
           </CardField>
           {qrTargets.map(target => {
             const url = targetUrlOf(qr, target);

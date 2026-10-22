@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 
 import { useQrCodesQuery } from '@/api/queries';
 import type { TableColumn } from '@/components/AdaptiveTable/tableColumns';
+import { CopyableLink } from '@/components/CopyableLink/CopyableLink';
 import { ListTable } from '@/components/ListTable/ListTable';
 import { PageHeader } from '@/components/PageHeader/PageHeader';
 import { SearchInput } from '@/components/SearchInput/SearchInput';
@@ -68,6 +69,14 @@ export function QrCodes() {
         priority: 2,
         render: qr => <Code fz="sm">{qr.slug}</Code>,
         sortValue: qr => qr.slug
+      },
+      {
+        // The link printed into the code, copied by a click on it; the row opens the card everywhere else
+        key: 'link',
+        title: t.qrCodes.columns.link,
+        minWidth: 220,
+        priority: 3,
+        render: qr => <CopyableLink url={qr.redirect_url} />
       },
       {
         key: 'scans',

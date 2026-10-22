@@ -89,3 +89,58 @@ export interface ServerInfo {
   version: string;
   license: string;
 }
+
+// === Scan statistics (GET /api/v1/stats/scans) ===
+
+/** The scanner's device, and also whose link the scanner was sent to. */
+export type ScanPlatform = 'ios' | 'huawei' | 'android' | 'desktop';
+
+/** One calendar day of the period (every day present, zeros included), split by the scanner's platform. */
+export interface DayScans {
+  day: string; // YYYY-MM-DD, the server's calendar
+  ios: number;
+  huawei: number;
+  android: number;
+  desktop: number;
+  total: number;
+}
+
+/** Where scanners of one platform were sent: `destination` differs from `platform` when its link is blank. */
+export interface RouteScans {
+  platform: ScanPlatform;
+  destination: ScanPlatform;
+  scans: number;
+}
+
+/** One code over the period, split by the scanner's platform; codes without scans are listed too. */
+export interface CodeScans {
+  slug: string;
+  name: string;
+  scans: number;
+  ios: number;
+  huawei: number;
+  android: number;
+  desktop: number;
+}
+
+/** ISO weekday (1 = Monday) and hour of the server's day; only cells with scans. */
+export interface WeekdayHourScans {
+  weekday: number;
+  hour: number;
+  scans: number;
+}
+
+export interface ScanReport {
+  from: string;
+  to: string;
+  slug: string | null;
+  /** The first scan of the journal: before it only the lifetime counters of the cards exist. */
+  tracking_since: string | null;
+  total: number;
+  /** The same number of days right before `from`. */
+  previous_total: number;
+  by_day: DayScans[];
+  by_route: RouteScans[];
+  by_code: CodeScans[];
+  by_weekday_hour: WeekdayHourScans[];
+}

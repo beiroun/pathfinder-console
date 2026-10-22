@@ -6,6 +6,18 @@ import type { ServerInfo } from '../types';
 
 const loadQrCodes = () => api.getQrCodes();
 
+export interface ScanReportArgs {
+  from: string;
+  to: string;
+  slug?: string;
+}
+
+// The key is the arguments themselves: a new period or code is a new request, the same one is not repeated
+const loadScanReport = (key: string) => {
+  const { from, to, slug } = JSON.parse(key) as ScanReportArgs;
+  return api.getScanReport(from, to, slug);
+};
+
 // One request per page load: the footer of the column and the one under the login card share it; a failure is not
 // cached, so the next mount asks again
 let serverVersionRequest: Promise<ServerInfo> | null = null;
@@ -28,3 +40,7 @@ export const useQrCodeQuery = (slug: string | undefined) =>
   useApiQuery(slug ?? null, api.getQrCode);
 
 export const useServerVersionQuery = () => useApiQuery(SERVER_VERSION, loadServerVersion);
+
+/** The statistics of a period; the arguments are the key, so changing any of them loads anew. */
+export const useScanReportQuery = (args: ScanReportArgs) =>
+  useApiQuery(JSON.stringify(args), loadScanReport);

@@ -1,0 +1,254 @@
+/* SPDX-License-Identifier: BUSL-1.1 */
+/* Copyright (c) 2026 Andrei Baranov (84softworks). Licensed under the Business Source License 1.1 - see LICENSE. */
+
+/* The statistics dashboard. Series colours: the four platforms as a categorical palette, checked with the data-viz
+   validator in both schemes (lightness band, chroma, colour-blind separation of neighbours, contrast) - slot 2 is
+   the 84softworks orange, the dark steps are their own, picked against the navy canvas. A platform keeps its
+   colour on every chart */
+:root {
+  --pf-series-ios: #2a78d6;
+  --pf-series-huawei: #dd5410;
+  --pf-series-android: #1baf7a;
+  --pf-series-desktop: #eda100;
+  /* The heatmap: one hue, from the canvas to full */
+  --pf-heat: #2a78d6;
+  --pf-track: color-mix(in srgb, var(--pf-ink) 6%, var(--pf-canvas));
+}
+
+[data-mantine-color-scheme='dark'] {
+  --pf-series-ios: #5a6ccf;
+  --pf-series-huawei: #ea6420;
+  --pf-series-android: #199e70;
+  --pf-series-desktop: #c98500;
+  --pf-heat: #8a98e8;
+}
+
+.pf-stats__filters {
+  align-items: flex-start;
+}
+
+.pf-stats__period {
+  align-self: center;
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ash);
+}
+
+.pf-stats__date-label {
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ash);
+}
+
+/* While another period loads, the previous report stays, dimmed - no skeleton, no jump */
+.pf-stats {
+  transition: opacity 0.2s ease;
+}
+
+.pf-stats--stale {
+  opacity: 0.55;
+}
+
+/* The KPI strip sits right under the filters, four columns once they fit */
+@media (min-width: 1216px) {
+  .pf-metrics.pf-stats__kpis {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Columns of numbers align on tabular figures */
+.pf-stats__num {
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-stats__strong {
+  font-weight: 600;
+}
+
+.pf-stats__note {
+  margin-top: 4px;
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ash);
+}
+
+.pf-stats__delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.pf-stats__delta--up {
+  color: var(--mantine-color-teal-7);
+}
+
+.pf-stats__delta--down {
+  color: var(--mantine-color-red-7);
+}
+
+[data-mantine-color-scheme='dark'] .pf-stats__delta--up {
+  color: var(--mantine-color-teal-4);
+}
+
+[data-mantine-color-scheme='dark'] .pf-stats__delta--down {
+  color: var(--mantine-color-red-4);
+}
+
+/* A section's title and lede on the left, its own switch (chart / table) on the right */
+.pf-stats__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.pf-stats__empty {
+  margin: 0;
+  padding: 40px 0;
+  text-align: center;
+  color: var(--pf-ash);
+}
+
+.pf-stats__table-scroll {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+/* Who scans / where they went: side by side on a wide screen, each its own section */
+.pf-stats__pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: var(--mantine-spacing-xl);
+}
+
+@media (min-width: 75em) {
+  .pf-stats__pair {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pf-stats__fallback {
+  margin: 16px 0 0;
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ink-soft);
+}
+
+.pf-stats__slug {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0;
+  color: var(--pf-ash);
+}
+
+/* Horizontal share bars: label and value in ink, the colour only on the swatch and the bar */
+.pf-share-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pf-share__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.pf-share__swatch {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+.pf-share__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.pf-share__value {
+  font-weight: 600;
+}
+
+.pf-share__percent {
+  width: 64px;
+  text-align: right;
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ash);
+}
+
+.pf-share__track {
+  height: 10px;
+  background: var(--pf-track);
+  overflow: hidden;
+}
+
+.pf-share__fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+/* A code's devices as one thin stacked bar, a 2px gap between the parts */
+.pf-minibar {
+  display: flex;
+  gap: 2px;
+  height: 10px;
+  min-width: 4px;
+}
+
+.pf-minibar__part {
+  flex-basis: 0;
+  min-width: 2px;
+}
+
+/* Weekday x hour: 24 columns that shrink with the page, never a horizontal scroll */
+.pf-heat {
+  display: grid;
+  gap: 2px;
+  max-width: 960px;
+}
+
+.pf-heat__row {
+  display: grid;
+  grid-template-columns: 32px repeat(24, minmax(0, 1fr));
+  gap: 2px;
+  align-items: center;
+}
+
+.pf-heat__day,
+.pf-heat__hour {
+  font-size: 11px;
+  color: var(--pf-ash);
+  font-variant-numeric: tabular-nums;
+}
+
+.pf-heat__cell {
+  aspect-ratio: 1;
+  max-height: 32px;
+  background: var(--pf-track);
+}
+
+.pf-heat__cell:hover,
+.pf-heat__cell:focus-visible {
+  outline: 2px solid var(--pf-ink);
+  outline-offset: -1px;
+}
+
+.pf-heat__legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: var(--pf-text-caption);
+  color: var(--pf-ash);
+}
+
+.pf-heat__swatch {
+  width: 14px;
+  height: 14px;
+  background: var(--pf-track);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pf-stats,
+  .pf-share__fill {
+    transition: none;
+  }
+}
