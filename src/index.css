@@ -18,8 +18,11 @@
   gap: 12px;
 }
 
+/* The frame carries the size and the image fills it: a % width on the image would resolve against the frame, whose
+   width depends on the image - the browser falls back to the PNG's natural 512 px and stretches the frame past the code */
 .pf-qr__button {
   display: block;
+  width: min(240px, 100%);
   line-height: 0;
   border: 1px solid var(--pf-hairline);
   cursor: copy;
@@ -27,7 +30,7 @@
 
 .pf-qr__image {
   display: block;
-  width: min(240px, 100%);
+  width: 100%;
   height: auto;
 }
 
