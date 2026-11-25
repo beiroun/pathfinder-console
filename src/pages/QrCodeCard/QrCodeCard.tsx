@@ -95,12 +95,23 @@ export function QrCodeCard() {
     );
   }
   if (isLoading) {
-    return <Loader size="sm" />;
+    return (
+      <>
+        <EntityCardHeader kicker={t.pages.qrCode.kicker} title={slug} onBack={goBack} />
+        <Loader size="sm" />
+      </>
+    );
   }
   if (!qr) {
     return (
       <>
-        <EntityCardHeader kicker={t.pages.qrCode.kicker} title={slug} onBack={goBack} />
+        <EntityCardHeader
+          kicker={t.pages.qrCode.kicker}
+          title={slug}
+          onBack={goBack}
+          onRefresh={refetch}
+          isRefreshing={isFetching}
+        />
         <Alert color="red" title={t.table.loadError}>
           <Text size="sm" mb="sm">
             {describeApiError(error, t.api)}
@@ -118,17 +129,28 @@ export function QrCodeCard() {
     );
   }
   // Keyed by slug: another code opened in place starts with its own preview and no dialog left open
-  return <QrCodeCardContent key={qr.slug} qr={qr} onBack={goBack} onChanged={refetch} />;
+  return (
+    <QrCodeCardContent
+      key={qr.slug}
+      qr={qr}
+      onBack={goBack}
+      onChanged={refetch}
+      isRefreshing={isFetching}
+    />
+  );
 }
 
 function QrCodeCardContent({
   qr,
   onBack,
-  onChanged
+  onChanged,
+  isRefreshing
 }: {
   qr: QrView;
   onBack: () => void;
+  /** Re-reads the code: after a change here and on "Refresh" in the title. */
   onChanged: () => void;
+  isRefreshing: boolean;
 }) {
   const { t, lang } = useLang();
   const navigate = useNavigate();
@@ -225,6 +247,8 @@ function QrCodeCardContent({
         subtitle={`${qr.slug} · ${copy.updated.toLowerCase()} ${formatServerTime(qr.updated_at)}`}
         actions={actions}
         onBack={onBack}
+        onRefresh={onChanged}
+        isRefreshing={isRefreshing}
       />
 
       {notice && (

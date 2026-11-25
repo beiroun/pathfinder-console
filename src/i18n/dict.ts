@@ -74,6 +74,8 @@ export interface Copy {
     /** The menu of a record's changes in its card. */
     actions: string;
     back: string;
+    /** Re-reads the record on its card page. */
+    refresh: string;
     toList: string;
     retry: string;
     none: string;
@@ -306,6 +308,7 @@ const en: Copy = {
     delete: 'Delete',
     actions: 'Actions',
     back: 'Back',
+    refresh: 'Refresh',
     toList: 'To the list',
     retry: 'Retry',
     none: '–'
@@ -559,6 +562,7 @@ const ru: Copy = {
     delete: 'Удалить',
     actions: 'Действия',
     back: 'Назад',
+    refresh: 'Обновить',
     toList: 'К списку',
     retry: 'Повторить',
     none: '–'
